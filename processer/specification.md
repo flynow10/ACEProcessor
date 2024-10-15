@@ -4,11 +4,6 @@ This is an implementation of the RISC-V 32-bit instruction set architecture (ISA
 
 ## RISC-V Instruction Set Architecture
 
-<style>
-  th, td {
-    text-align: center;
-  }
-</style>
 <table>
   <thead>
     <tr>
