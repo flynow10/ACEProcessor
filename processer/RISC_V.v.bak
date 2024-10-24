@@ -87,15 +87,4 @@ module RISC_V(
 	//////////// GPIO_1, GPIO_1 connect to GPIO Default //////////
 	inout 		    [35:0]		GPIO_1
 );
-
-
-wire clk;
-assign clk = CLOCK_50;
-
-reg clk25;
-
-//instantiating modules
-clock_divider_25 div(clk, clk25);
-vga_controller vga();
-
 endmodule
