@@ -1,3 +1,8 @@
+# Resources
+
+- Tiny RISCV
+- RARS (RISC-V Assembler and Runtime Simulator)
+
 # Processer Specification
 
 This is an implementation of the RISC-V 32-bit instruction set architecture (ISA) in Verilog.
