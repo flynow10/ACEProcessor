@@ -56,3 +56,4 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_global_assignment -name VERILOG_FILE vga_controller.v
 set_global_assignment -name VERILOG_FILE clock_divider_25.v
+set_global_assignment -name VERILOG_FILE ../../Labs/LAB_12/clock_divider_250kHz.v
