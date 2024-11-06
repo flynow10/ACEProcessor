@@ -62,7 +62,7 @@ module RISC_V(
 	inout 		          		PS2_DAT2,
 
 	//////////// SW //////////
-	input 		     [9:0]		SW
+	input 		     [9:0]		SW,
 
 	//////////// Video-In //////////
 	input 		          		TD_CLK27,
@@ -87,15 +87,18 @@ module RISC_V(
 	//////////// GPIO_1, GPIO_1 connect to GPIO Default //////////
 	inout 		    [35:0]		GPIO_1
 );
+	parameter WORD_SIZE = 'd16;
 
+	wire [15:0] a;
+	wire [15:0] b;
+	wire [15:0] o;
 
-wire clk;
-assign clk = CLOCK_50;
+	wire [2:0] op;
 
-reg clk25;
+	assign op = SW[2:0];
+	assign b = SW[9:6];
+	assign LEDR = o[9:0];
 
-//instantiating modules
-clock_divider_25 div(clk, clk25);
-vga_controller vga();
+	ALU #(WORD_SIZE) alu(a, b, op, o);
 
 endmodule

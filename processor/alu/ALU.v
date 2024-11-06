@@ -1,5 +1,5 @@
 module ALU #(
-  WORD_SIZE
+  parameter WORD_SIZE = 16
 ) (
   input [WORD_SIZE-1:0] a,
   input [WORD_SIZE-1:0] b,
@@ -14,9 +14,14 @@ module ALU #(
     OP_XOR = 3'd4, // Bitwise Xor
     OP_SR = 3'd5, // Shift Right
     OP_OR = 3'd6, // Bitwise Or
-    OP_AND = 3'd7, // Bitwise And
-    
+    OP_AND = 3'd7; // Bitwise And
+  
+  reg signed [WORD_SIZE-1:0] a_signed;
+  reg signed [WORD_SIZE-1:0] b_signed;
+
   always @(*) begin
+    a_signed = a;
+    b_signed = b;
     case (alu_operation)
       OP_AND: out = a & b;
       OP_XOR: out = a ^ b;
@@ -24,9 +29,7 @@ module ALU #(
       OP_ADD: out = a + b;
       OP_SR: out = a >> b;
       OP_SLL: out = a << b;
-      OP_SLT: begin
-        
-      end
+      OP_SLT: out = a_signed < b_signed;
       OP_SLTU: out = a < b;
       default: out = { WORD_SIZE{1'b0} };
     endcase
