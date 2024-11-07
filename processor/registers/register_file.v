@@ -1,5 +1,5 @@
 module register_file #(
-  parameter WORD_SIZE = 16
+  parameter WORD_SIZE = 32
 ) (
   input clk,
   input rst,

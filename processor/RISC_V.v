@@ -87,18 +87,40 @@ module RISC_V(
 	//////////// GPIO_1, GPIO_1 connect to GPIO Default //////////
 	inout 		    [35:0]		GPIO_1
 );
-	parameter WORD_SIZE = 'd16;
+	parameter WORD_SIZE = 'd32;
 
-	wire [15:0] a;
-	wire [15:0] b;
-	wire [15:0] o;
+	wire clk;
+	wire rst;
+	wire [WORD_SIZE-1:0] pc_addr;
 
-	wire [2:0] op;
+	assign clk = ~KEY[2];
+	assign rst = ~KEY[3];
 
-	assign op = SW[2:0];
-	assign b = SW[9:6];
-	assign LEDR = o[9:0];
+	program_counter #(WORD_SIZE) pc (.clk(clk), .rst(rst), .en(1'b1), .wren(1'b0), .X(32'b0), .addr(pc_addr));
 
-	ALU #(WORD_SIZE) alu(a, b, op, o);
+	three_decimal_vals_w_neg seven_seg(.val(pc_addr[7:0]), .seg7_neg_sign(HEX3), .seg7_dig0(HEX0), .seg7_dig1(HEX1), .seg7_dig2(HEX2));
+
+
+
+	// wire [31:0] a;
+	// wire [31:0] b;
+	// wire [31:0] o;
+	// wire [31:0] q;
+
+	// wire [2:0] op;
+
+	// assign op = SW[2:0];
+	// assign b = SW[9:6];
+	// assign LEDR = o[9:0];
+
+	// ALU #(WORD_SIZE) alu(a, b, op, o);
+
+	// processor_memory memory(
+	// 	.address(a[15:0]),
+	// 	.clock(clk),
+	// 	.data(b),
+	// 	.wren(1'b0),
+	// 	.q(q)
+	// );
 
 endmodule

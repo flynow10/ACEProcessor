@@ -1,5 +1,5 @@
 module ALU #(
-  parameter WORD_SIZE = 16
+  parameter WORD_SIZE = 32
 ) (
   input [WORD_SIZE-1:0] a,
   input [WORD_SIZE-1:0] b,
