@@ -90,11 +90,20 @@ module RISC_V(
 	parameter WORD_SIZE = 'd32;
 
 	wire clk;
+	wire clk1;
+	wire clk2;
+	wire clk3;
+	wire clk4;
 	wire rst;
 	wire [WORD_SIZE-1:0] pc_addr;
 
-	assign clk = ~KEY[2];
-	assign rst = ~KEY[3];
+	assign clk1 = KEY[2];
+	assign rst = KEY[3];
+	
+	clock_divider_25 cld1 (clk1, clk2);
+	clock_divider_25 cld2 (clk2, clk3);
+	clock_divider_25 cld3 (clk3, clk4);
+	clock_divider_25 cld4 (clk4, clk);
 
 	program_counter #(WORD_SIZE) pc (.clk(clk), .rst(rst), .en(1'b1), .wren(1'b0), .X(32'b0), .addr(pc_addr));
 

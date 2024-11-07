@@ -38,7 +38,7 @@
 
 
 set_global_assignment -name FAMILY "Cyclone V"
-set_global_assignment -name DEVICE 5CSEMA6F31C6
+set_global_assignment -name DEVICE 5CSEMA5F31C6
 set_global_assignment -name TOP_LEVEL_ENTITY "RISC_V"
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "23:58:39  OCTOBER 14, 2024"
@@ -54,12 +54,20 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
-set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR simulation/questa -section_id eda_simulation
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name VERILOG_FILE alu/ALU.v
-set_global_assignment -name VERILOG_FILE RISC_V.v
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_FILE registers/program_counter.v
+set_global_assignment -name VERILOG_FILE io/three_decimal_vals_w_neg.v
+set_global_assignment -name VERILOG_FILE io/seven_segment_negative.v
+set_global_assignment -name VERILOG_FILE io/seven_segment.v
+set_global_assignment -name VERILOG_FILE registers/register.v
+set_global_assignment -name VERILOG_FILE alu/ALU.v
+set_global_assignment -name VERILOG_FILE RISC_V.v
+set_global_assignment -name SOURCE_FILE db/RISC_V.cmp.rdb
+set_global_assignment -name QIP_FILE processor_mem.qip
+set_global_assignment -name MIF_FILE memory.mif
+set_global_assignment -name QIP_FILE memory/processor_memory.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
