@@ -17,7 +17,7 @@ reg [WORD_SIZE-1:0] registers [31:0];
 assign rv1 = registers[rs1];
 assign rv2 = registers[rs2];
 
-integer i = 0;
+integer i;
 
 always @(posedge clk or negedge rst) begin
   if(rst == 1'b0)
