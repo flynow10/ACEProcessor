@@ -21,7 +21,7 @@ integer i;
 
 always @(posedge clk or negedge rst) begin
   if(rst == 1'b0)
-    for (i = 0; i < 32; i ++) begin
+    for (i = 0; i < WORD_SIZE; i ++) begin
       registers[i] <= 0;
     end
 		else if(en == 1'b1 & rd != 5'b0)

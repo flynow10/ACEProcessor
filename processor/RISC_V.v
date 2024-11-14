@@ -89,6 +89,11 @@ module RISC_V(
 );
 	parameter WORD_SIZE = 'd32;
 
+	// Clock
+	wire clk;
+	wire rst;
+
+	// FSM Control
 	parameter START = 3'b0,
 						FETCH = 3'b1,
 						WAIT_FETCH = 3'b10,
@@ -98,15 +103,32 @@ module RISC_V(
 						WAIT_UPDATE = 3'b110,
 						ERROR = 3'b111;
 
-	wire clk;
-	wire rst;
-
 	reg [2:0] S;
 	reg [2:0] NS;
-
+	
+	// Memory Control
 	reg requested_mem;
+	wire [WORD_SIZE-1:0] memory_output;
+	reg [15:0] memory_address;
 
-	reg [WORD_SIZE-1:0] instruction;
+	// Fetch / Decode
+	wire [WORD_SIZE-1:0] instruction;
+	wire [5:0] rd;
+	wire [5:0] rs1;
+	wire [5:0] rs2;
+	wire rs2_use_imm;
+	wire [WORD_SIZE-1:0] immediate;
+	wire [3:0] alu_op;
+
+	wire [WORD_SIZE-1:0] rv1;
+	wire [WORD_SIZE-1:0] rv2;
+
+	// Execute
+	reg [WORD_SIZE-1:0] alu_input_a,
+	reg [WORD_SIZE-1:0] alu_input_b,
+	wire [WORD_SIZE-1:0] alu_output
+
+
 
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
@@ -137,31 +159,57 @@ module RISC_V(
 	end
 
 	always @(posedge clk or negedge rst) begin
-		case (S)
-			FETCH: begin
-				
-			end
-		endcase
+		if(rst == 1'b0) begin
+			instruction <= 32'b0;
+			requested_mem <= 0'b0;	
+		end else
+			case (S)
+				FETCH: begin
+					instruction <= 32'b0;
+				end
+				DECODE: begin
+					alu_input_a <= rv1;
+					alu_input_b <= rs2_use_imm == 1'b0 ? rv2 : immediate;
+				end
+
+			endcase
 	end
-	// wire [31:0] a;
-	// wire [31:0] b;
-	// wire [31:0] o;
-	// wire [31:0] q;
 
-	// wire [2:0] op;
+	instruction_decoder #(WORD_SIZE) instruction_decoder(
+		.instruction(instruction),
+		.rd(rd),
+		.rs1(rs1),
+		.rs2(rs2),
+		.rs2_use_imm(rs2_use_imm),
+		.immediate(immediate),
+		.alu_op(alu_op)
+	);
 
-	// assign op = SW[2:0];
-	// assign b = SW[9:6];
-	// assign LEDR = o[9:0];
+	register_file #(WORD_SIZE) registers(
+		.clk(clk),
+		.rst(rst),
+		.en(1'b0),
+		.rd(rd),
+		.rs1(rs1),
+		.rs2(rs2),
+		.data(alu_output),
+		.rv1(rv1),
+		.rv2(rv2)
+	);
 
-	// ALU #(WORD_SIZE) alu(a, b, op, o);
+	ALU #(WORD_SIZE) alu(
+		.a(alu_input_a),
+		.b(alu_input_b),
+		.raw_alu_operation(alu_op),
+		.out(alu_output)
+	);
 
-	// processor_memory memory(
-	// 	.address(a[15:0]),
-	// 	.clock(clk),
-	// 	.data(b),
-	// 	.wren(1'b0),
-	// 	.q(q)
-	// );
+	processor_memory memory(
+		.address(memory_address),
+		.clock(clk),
+		.data(0),
+		.wren(1'b0),
+		.q(memory_output)
+	);
 
 endmodule

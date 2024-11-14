@@ -3,7 +3,7 @@ module ALU #(
 ) (
   input [WORD_SIZE-1:0] a,
   input [WORD_SIZE-1:0] b,
-  input [2:0] alu_operation,
+  input [3:0] raw_alu_operation,
   output reg [WORD_SIZE-1:0] out
 );
   parameter 
@@ -19,14 +19,25 @@ module ALU #(
   reg signed [WORD_SIZE-1:0] a_signed;
   reg signed [WORD_SIZE-1:0] b_signed;
 
+  wire [2:0] alu_op;
+  wire invert_b;
+
+  assign alu_op = raw_alu_operation[2:0];
+  assign invert_b = raw_alu_operation[3];
+
   always @(*) begin
     a_signed = a;
     b_signed = b;
-    case (alu_operation)
+    case (alu_op)
       OP_AND: out = a & b;
       OP_XOR: out = a ^ b;
       OP_OR: out = a | b;
-      OP_ADD: out = a + b;
+      OP_ADD: begin
+        if(invert_b == 1'b0)
+          out = a + b;
+        else
+          out = a - b;
+      end
       OP_SR: out = a >> b;
       OP_SLL: out = a << b;
       OP_SLT: out = a_signed < b_signed;
