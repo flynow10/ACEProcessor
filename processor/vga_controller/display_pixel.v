@@ -1,8 +1,12 @@
 module display_pixel (
-	input [8:0]RGB,
-	input en,
+	input [7:0]r,
+	input [7:0]g,
+	input [7:0]b,
 	input clk_25,
 	input rst,
+	
+	output wire x,
+	output wire y,
 	
 	output vga_blank,
 	output [7:0]vga_b,
@@ -11,9 +15,8 @@ module display_pixel (
 	output vga_clk,
 	output vga_hs,
 	output vga_vs,
-	output vga_sync_n,
+	output vga_sync_n
 	
-	output frame_displayed
 );
 
 
@@ -21,7 +24,15 @@ reg [7:0]hs,vs,hns,vns;
 reg [9:0]hcount, vcount;
 reg hblank, vblank;
 
+assign vga_r = r;
+assign vga_b = b;
+assign vga_g = g;
 assign vga_blank = hblank | vblank;
+assign vga_sync_n = 1'b0;
+assign vga_clk = clk_25;
+
+assign x = (hblank == 1'd1)?hcount:10'd0;
+assign y = (vblank == 1'd1)?vcount:10'd0;
 
 
 parameter 
@@ -138,7 +149,7 @@ begin
 		case (hs)
 			HDISP: 
 			begin
-				hblank <= 1'b0;
+				hblank <= 1'b1;
 				vga_hs <= 1'b1;
 				if (hcount == HDISP_TIME)
 					hcount <= 10'd0;
@@ -147,7 +158,7 @@ begin
 			end
 			HFRONT: 
 			begin
-				hblank <= 1'b1;
+				hblank <= 1'b0;
 				vga_hs <= 1'b1;
 				if (hcount == HFRONT_TIME)
 					hcount <= 10'd0;
@@ -156,7 +167,7 @@ begin
 			end
 			HSYNC:
 			begin
-				hblank <= 1'b1;
+				hblank <= 1'b0;
 				vga_hs <= 1'b0;
 				if (hcount == HSYNC_TIME)
 					hcount <= 10'd0;
@@ -165,7 +176,7 @@ begin
 			end
 			HBACK:
 			begin
-				hblank <= 1'b1;
+				hblank <= 1'b0;
 				vga_hs <= 1'b1;
 				if (hcount == HBACK_TIME)
 				begin
@@ -179,28 +190,28 @@ begin
 		case (vs)
 			VDISP:
 			begin
-				vblank <= 1'd0;
+				vblank <= 1'd1;
 				vga_vs <= 1'd1;
 				if (vcount == VDISP_TIME)
 					vcount <= 10'd0;
 			end
 			VFRONT:
 			begin
-				vblank <= 1'd1;
+				vblank <= 1'd0;
 				vga_vs <= 1'd1;
 				if (vcount == VFRONT_TIME)
 					vcount <= 10'd0;
 			end
 			VSYNC:
 			begin
-				vblank <= 1'd1;
+				vblank <= 1'd0;
 				vga_vs <= 1'd0;
 				if (vcount == VSYNC_TIME)
 					vcount <= 10'd0;
 			end
 			VBACK:
 			begin
-				vblank <= 1'd1;
+				vblank <= 1'd0;
 				vga_vs <= 1'd1;
 				if (vcount == VBACK_TIME)
 					vcount <= 10'd0;
@@ -208,5 +219,4 @@ begin
 		endcase
 	end
 end
-
 endmodule
