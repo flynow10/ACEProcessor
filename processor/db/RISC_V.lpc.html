@@ -16,7 +16,7 @@
 <TH>Output only Bidir</TH>
 </TR>
 <TR >
-<TD >seven_seg|neg</TD>
+<TD >seven_seg_display|neg</TD>
 <TD >1</TD>
 <TD >6</TD>
 <TD >0</TD>
@@ -32,7 +32,7 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >seven_seg|dig2</TD>
+<TD >seven_seg_display|dig4</TD>
 <TD >4</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -48,7 +48,7 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >seven_seg|dig1</TD>
+<TD >seven_seg_display|dig3</TD>
 <TD >4</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -64,7 +64,7 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >seven_seg|dig0</TD>
+<TD >seven_seg_display|dig2</TD>
 <TD >4</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -80,12 +80,92 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >seven_seg</TD>
+<TD >seven_seg_display|dig1</TD>
+<TD >4</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >7</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >seven_seg_display|dig0</TD>
+<TD >4</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >7</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >seven_seg_display</TD>
+<TD >32</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >42</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >instruction_memory|altsyncram_component|auto_generated|mux2</TD>
+<TD >259</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >32</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >instruction_memory|altsyncram_component|auto_generated|rden_decode</TD>
+<TD >3</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
 <TD >8</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
-<TD >28</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >instruction_memory|altsyncram_component|auto_generated|decode3</TD>
+<TD >4</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >8</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -96,28 +176,12 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >pc</TD>
-<TD >36</TD>
-<TD >34</TD>
+<TD >instruction_memory|altsyncram_component|auto_generated</TD>
+<TD >50</TD>
 <TD >0</TD>
-<TD >34</TD>
+<TD >0</TD>
+<TD >0</TD>
 <TD >32</TD>
-<TD >34</TD>
-<TD >34</TD>
-<TD >34</TD>
-<TD >0</TD>
-<TD >0</TD>
-<TD >0</TD>
-<TD >0</TD>
-<TD >0</TD>
-</TR>
-<TR >
-<TD >cld4</TD>
-<TD >1</TD>
-<TD >0</TD>
-<TD >0</TD>
-<TD >0</TD>
-<TD >1</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -128,12 +192,28 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >cld3</TD>
-<TD >1</TD>
+<TD >instruction_memory</TD>
+<TD >50</TD>
+<TD >33</TD>
+<TD >0</TD>
+<TD >33</TD>
+<TD >32</TD>
+<TD >33</TD>
+<TD >33</TD>
+<TD >33</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
-<TD >1</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >alu</TD>
+<TD >68</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >32</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -144,12 +224,12 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >cld2</TD>
-<TD >1</TD>
+<TD >registers</TD>
+<TD >50</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
-<TD >1</TD>
+<TD >64</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
@@ -160,12 +240,28 @@
 <TD >0</TD>
 </TR>
 <TR >
-<TD >cld1</TD>
-<TD >1</TD>
+<TD >instruction_decoder|imm_12</TD>
+<TD >32</TD>
+<TD >20</TD>
+<TD >0</TD>
+<TD >20</TD>
+<TD >32</TD>
+<TD >20</TD>
+<TD >20</TD>
+<TD >20</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>
-<TD >1</TD>
+<TD >0</TD>
+<TD >0</TD>
+</TR>
+<TR >
+<TD >instruction_decoder</TD>
+<TD >32</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >0</TD>
+<TD >52</TD>
 <TD >0</TD>
 <TD >0</TD>
 <TD >0</TD>

@@ -5,5 +5,5 @@ module sign_extender #(
   input [WORD_SIZE-1:0] in,
   output [WORD_SIZE-1:0] out
 );
-  assign out = {(WORD_SIZE-IN_SIZE){in[IN_SIZE-1]}, in[IN_SIZE-1:0]};
+  assign out = {{WORD_SIZE-IN_SIZE{in[IN_SIZE-1]}}, in[IN_SIZE-1:0]};
 endmodule

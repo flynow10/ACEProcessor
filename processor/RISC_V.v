@@ -93,6 +93,9 @@ module RISC_V(
 	wire clk;
 	wire rst;
 
+	assign clk = ~KEY[3];
+	assign rst = KEY[2];
+
 	// FSM Control
 	parameter START = 3'b0,
 						FETCH = 3'b1,
@@ -105,6 +108,8 @@ module RISC_V(
 
 	reg [2:0] S;
 	reg [2:0] NS;
+
+	assign LEDR[2:0] = S;
 
 	// Display
 	reg [31:0] to_display;
@@ -135,7 +140,8 @@ module RISC_V(
 	wire [WORD_SIZE-1:0] alu_output;
 	reg enable_register;
 
-
+	// Mem write back
+	reg [WORD_SIZE-1:0] register_write_back;
 
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
@@ -147,11 +153,7 @@ module RISC_V(
 	always @(*) begin
 		case (S)
 			START: NS = FETCH;
-			FETCH: 
-				if(requested_mem == 1'b1)
-					NS = WAIT_FETCH;
-				else
-					NS = DECODE;
+			FETCH: NS = WAIT_FETCH;
 			WAIT_FETCH: NS = DECODE;
 			DECODE: NS = EXECUTE;
 			EXECUTE: NS = UPDATE;
@@ -174,11 +176,7 @@ module RISC_V(
 			case (S)
 				FETCH: begin
 					enable_register <= 1'b0;
-					requested_mem <= 1'b1;
 					memory_address <= program_counter;
-				end
-				WAIT_FETCH: begin
-					requested_mem <= 1'b0;
 				end
 				DECODE: begin
 					instruction <= memory_output;
@@ -188,7 +186,9 @@ module RISC_V(
 					alu_input_b <= rs2_use_imm == 1'b0 ? rv2 : immediate;
 				end
 				UPDATE: begin
-					enable_register <= store_register;
+					register_write_back <= alu_output;
+					enable_register <= 1'b1;
+					program_counter <= program_counter + 32'b1;
 				end
 			endcase
 	end
@@ -206,11 +206,11 @@ module RISC_V(
 	register_file #(WORD_SIZE) registers(
 		.clk(clk),
 		.rst(rst),
-		.en(1'b0),
+		.en(enable_register),
 		.rd(rd),
 		.rs1(rs1),
 		.rs2(rs2),
-		.data(alu_output),
+		.data(register_write_back),
 		.rv1(rv1),
 		.rv2(rv2)
 	);
@@ -230,6 +230,15 @@ module RISC_V(
 		.q(memory_output)
 	);
 
+	always @(*) begin
+		case (~KEY[1:0])
+			2'b00: to_display = alu_output;
+			2'b01: to_display = rv1;
+			2'b10: to_display = rv2;
+			2'b11: to_display = program_counter;
+		endcase
+	end
+
 	five_decimal_vals_w_neg seven_seg_display(
 		.val(to_display),
 		.seg7_neg_sign(HEX5),
@@ -238,5 +247,5 @@ module RISC_V(
 		.seg7_dig2(HEX2),
 		.seg7_dig3(HEX3),
 		.seg7_dig4(HEX4)
-	)
+	);
 endmodule

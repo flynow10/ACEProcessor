@@ -16,20 +16,20 @@ reg [3:0] result_thousands_digit;
 reg [3:0] result_ten_thousands_digit;
 reg result_is_negative;
 
-reg [7:0]twos_comp;
+reg [31:0]twos_comp;
 
 /* convert the binary value into 4 signals */
 always @(*)
 begin
-	  result_is_negative = val[7];
-	  twos_comp = val[7] ? (~val + 1): val;
-		overflow = twos_comp > 99999;
-	  
-	  result_one_digit = twos_comp % 10;
-	  result_ten_digit = (twos_comp / 10) % 10;
-	  result_hundred_digit = (twos_comp / 100) % 10;
-	  result_thousands_digit = (twos_comp / 1000) % 10;
-	  result_ten_thousands_digit = (twos_comp / 10000) % 10;
+	result_is_negative = val[31];
+	twos_comp = val[31] ? (~val + 1): val;
+	overflow = twos_comp > 99999;
+	
+	result_one_digit = twos_comp % 10;
+	result_ten_digit = (twos_comp / 10) % 10;
+	result_hundred_digit = (twos_comp / 100) % 10;
+	result_thousands_digit = (twos_comp / 1000) % 10;
+	result_ten_thousands_digit = (twos_comp / 10000) % 10;
 end
 
 /* instantiate the modules for each of the seven seg decoders including the negative one */

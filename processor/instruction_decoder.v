@@ -2,7 +2,7 @@ module instruction_decoder #(
   parameter WORD_SIZE = 32
 ) (
   input [WORD_SIZE-1:0] instruction,
-  output reg [6:0] opcode,
+  output [6:0] opcode,
   output reg [4:0] rd,
   output reg [4:0] rs1,
   output reg [4:0] rs2,
@@ -33,6 +33,7 @@ always @(*) begin
       rd = instruction[11:7];
       alu_op = {1'b0, instruction[14:12]};
       rs1 = instruction[19:15];
+      rs2 = 5'b0;
       rs2_use_imm = 1'b1;
       immediate = sign_extended_imm_12;
     end
