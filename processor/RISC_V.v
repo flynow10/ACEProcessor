@@ -105,6 +105,9 @@ module RISC_V(
 
 	reg [2:0] S;
 	reg [2:0] NS;
+
+	// Display
+	reg [31:0] to_display;
 	
 	// Memory Control
 	reg requested_mem;
@@ -112,21 +115,25 @@ module RISC_V(
 	reg [15:0] memory_address;
 
 	// Fetch / Decode
-	wire [WORD_SIZE-1:0] instruction;
+	reg [31:0] program_counter;
+
+	reg [WORD_SIZE-1:0] instruction;
 	wire [5:0] rd;
 	wire [5:0] rs1;
 	wire [5:0] rs2;
 	wire rs2_use_imm;
 	wire [WORD_SIZE-1:0] immediate;
 	wire [3:0] alu_op;
+	wire store_register;
 
 	wire [WORD_SIZE-1:0] rv1;
 	wire [WORD_SIZE-1:0] rv2;
 
 	// Execute
-	reg [WORD_SIZE-1:0] alu_input_a,
-	reg [WORD_SIZE-1:0] alu_input_b,
-	wire [WORD_SIZE-1:0] alu_output
+	reg [WORD_SIZE-1:0] alu_input_a;
+	reg [WORD_SIZE-1:0] alu_input_b;
+	wire [WORD_SIZE-1:0] alu_output;
+	reg enable_register;
 
 
 
@@ -161,17 +168,28 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0) begin
 			instruction <= 32'b0;
-			requested_mem <= 0'b0;	
+			requested_mem <= 1'b0;
+			program_counter <= 32'b0;
 		end else
 			case (S)
 				FETCH: begin
-					instruction <= 32'b0;
+					enable_register <= 1'b0;
+					requested_mem <= 1'b1;
+					memory_address <= program_counter;
+				end
+				WAIT_FETCH: begin
+					requested_mem <= 1'b0;
 				end
 				DECODE: begin
+					instruction <= memory_output;
+				end
+				EXECUTE: begin
 					alu_input_a <= rv1;
 					alu_input_b <= rs2_use_imm == 1'b0 ? rv2 : immediate;
 				end
-
+				UPDATE: begin
+					enable_register <= store_register;
+				end
 			endcase
 	end
 
@@ -204,7 +222,7 @@ module RISC_V(
 		.out(alu_output)
 	);
 
-	processor_memory memory(
+	processor_memory instruction_memory(
 		.address(memory_address),
 		.clock(clk),
 		.data(0),
@@ -212,4 +230,13 @@ module RISC_V(
 		.q(memory_output)
 	);
 
+	five_decimal_vals_w_neg seven_seg_display(
+		.val(to_display),
+		.seg7_neg_sign(HEX5),
+		.seg7_dig0(HEX0),
+		.seg7_dig1(HEX1),
+		.seg7_dig2(HEX2),
+		.seg7_dig3(HEX3),
+		.seg7_dig4(HEX4)
+	)
 endmodule
