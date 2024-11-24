@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembler", "Assembler\Assembler.csproj", "{F88A0339-4D70-4E00-8F5A-769F7FC63430}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblerTester", "AssemblerTester\AssemblerTester.csproj", "{3F3C2A31-B316-4504-B74A-A440E75EF35C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F88A0339-4D70-4E00-8F5A-769F7FC63430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F88A0339-4D70-4E00-8F5A-769F7FC63430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F88A0339-4D70-4E00-8F5A-769F7FC63430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F88A0339-4D70-4E00-8F5A-769F7FC63430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F3C2A31-B316-4504-B74A-A440E75EF35C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F3C2A31-B316-4504-B74A-A440E75EF35C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F3C2A31-B316-4504-B74A-A440E75EF35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F3C2A31-B316-4504-B74A-A440E75EF35C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
