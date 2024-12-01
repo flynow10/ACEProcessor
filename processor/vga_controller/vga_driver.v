@@ -1,34 +1,35 @@
-module display_pixel (
+module vga_driver (
 	input [7:0]r,
 	input [7:0]g,
 	input [7:0]b,
 	input clk_25,
 	input rst,
 	
-	output wire x,
-	output wire y,
+	output wire [9:0]x,
+	output wire [9:0]y,
+	output reg disp_done,
 	
-	output vga_blank,
-	output [7:0]vga_b,
-	output [7:0]vga_g,
-	output [7:0]vga_r,
-	output vga_clk,
-	output vga_hs,
-	output vga_vs,
-	output vga_sync_n
+	output wire vga_blank,
+	output wire [7:0]vga_b,
+	output wire [7:0]vga_g,
+	output wire [7:0]vga_r,
+	output wire vga_clk,
+	output reg vga_hs,
+	output reg vga_vs,
+	output wire vga_sync_n
 	
 );
 
-
-reg [7:0]hs,vs,hns,vns;
+reg [1:0]vs, hs;
+reg [1:0]hns, vns;
 reg [9:0]hcount, vcount;
 reg hblank, vblank;
 
 assign vga_r = r;
 assign vga_b = b;
 assign vga_g = g;
-assign vga_blank = hblank | vblank;
-assign vga_sync_n = 1'b0;
+assign vga_blank = hblank & vblank;
+assign vga_sync_n = 1'b1;
 assign vga_clk = clk_25;
 
 assign x = (hblank == 1'd1)?hcount:10'd0;
@@ -36,28 +37,41 @@ assign y = (vblank == 1'd1)?vcount:10'd0;
 
 
 parameter 
-			HDISP = 8'd0,
-			HSYNC = 8'd1,
-			HFRONT = 8'd2,
-			HBACK = 8'd3,
+			HDISP = 2'd0,
+			HFRONT = 2'd1,
+			HSYNC = 2'd2,
+			HBACK = 2'd3,
 			
-			VDISP = 8'd7,
-			VSYNC = 8'd8,
-			VFRONT = 8'd9,
-			VBACK = 8'd10,
-			
-			ERROR = 8'b11111111;
-			
+			VDISP = 2'd0,
+			VFRONT = 2'd1,
+			VSYNC =	2'd2,
+			VBACK = 2'd3;
+
+	
 parameter
-			HDISP_TIME = 10'd640,
-			HFRONT_TIME = 10'd16,
-			HSYNC_TIME = 10'd96,
-			HBACK_TIME = 10'd48,
+			HDISP_TIME = 10'd639,
+			HFRONT_TIME = 10'd15,
+			HSYNC_TIME = 10'd95,
+			HBACK_TIME = 10'd47,
 			
-			VDISP_TIME = 10'd480,
-			VFRONT_TIME = 10'd10,
-			VSYNC_TIME = 10'd2,
-			VBACK_TIME = 10'd33;
+			VDISP_TIME = 10'd479,
+			VFRONT_TIME = 10'd9,
+			VSYNC_TIME = 10'd1,
+			VBACK_TIME = 10'd32;
+
+/*			
+parameter
+			HDISP_TIME = 10'd5,
+			HFRONT_TIME = 10'd5,
+			HSYNC_TIME = 10'd5,
+			HBACK_TIME = 10'd5,
+			
+			VDISP_TIME = 10'd5,  
+			VFRONT_TIME = 10'd5,
+			VSYNC_TIME = 10'd5,
+			VBACK_TIME = 10'd5;
+*/			
+
 			
 always @ (posedge clk_25 or negedge rst)
 begin
@@ -78,61 +92,61 @@ begin
 	case (hs)
 		HDISP:
 		begin
-			if (hcount < HDISP_TIME)
-				hns = HDISP;
-			else
+			if (hcount == HDISP_TIME)
 				hns = HFRONT;
+			else
+				hns = HDISP;
 		end
 		HFRONT:
 		begin
-			if (hcount < HFRONT_TIME)
-				hns = HFRONT;
-			else
+			if (hcount == HFRONT_TIME)
 				hns = HSYNC;
+			else
+				hns = HFRONT;
 		end
 		HSYNC:
 		begin
-			if (hcount < HSYNC_TIME)
-				hns = HSYNC;
-			else
+			if (hcount == HSYNC_TIME)
 				hns = HBACK;
+			else
+				hns = HSYNC;
 		end
 		HBACK:
 		begin
-			if (hcount < HBACK_TIME)
-				hns = HBACK;
-			else
+			if (hcount == HBACK_TIME)
 				hns = HDISP;
+			else
+				hns = HBACK;
 		end
 	endcase
 	case (vs)
 		VDISP:
 		begin
-			if (vcount < VDISP_TIME)
-				vns = VDISP;
-			else
+			if (vcount == VDISP_TIME)
 				vns = VFRONT;
+			else
+				vns = VDISP;
 		end
 		VFRONT:
 		begin
-			if (vcount < VFRONT_TIME)
-				vns = VFRONT;
-			else
+			if (vcount == VFRONT_TIME)
 				vns = VSYNC;
+			else
+				vns = VFRONT;
 		end
 		VSYNC:
 		begin
-			if (vcount < VSYNC_TIME)
-				vns = VSYNC;
-			else
+			if (vcount == VSYNC_TIME)
 				vns = VBACK;
+			else
+				vns = VSYNC;
 		end
 		VBACK:
 		begin
-			if (vcount < VBACK_TIME)
-				vns = VBACK;
-			else
+			if (vcount == VBACK_TIME)
 				vns = VDISP;
+			else
+				vns = VBACK;
 		end
 	endcase
 end
@@ -141,8 +155,13 @@ always @ (posedge clk_25 or negedge rst)
 begin
 	if (rst == 1'b0)
 	begin
+		disp_done <= 1'b0;
 		hcount <= 10'd0;
 		vcount <= 10'd0;
+		vga_hs <= 1'd1;
+		vga_vs <= 1'd1;
+		hblank <= 1'd1;
+		vblank <= 1'd1;
 	end
 	else
 	begin
@@ -190,6 +209,7 @@ begin
 		case (vs)
 			VDISP:
 			begin
+				disp_done <= 1'b0;
 				vblank <= 1'd1;
 				vga_vs <= 1'd1;
 				if (vcount == VDISP_TIME)
@@ -197,6 +217,7 @@ begin
 			end
 			VFRONT:
 			begin
+				disp_done <= 1'b1;
 				vblank <= 1'd0;
 				vga_vs <= 1'd1;
 				if (vcount == VFRONT_TIME)
@@ -204,6 +225,7 @@ begin
 			end
 			VSYNC:
 			begin
+				disp_done <= 1'b1;
 				vblank <= 1'd0;
 				vga_vs <= 1'd0;
 				if (vcount == VSYNC_TIME)
@@ -211,6 +233,7 @@ begin
 			end
 			VBACK:
 			begin
+				disp_done <= 1'b1;
 				vblank <= 1'd0;
 				vga_vs <= 1'd1;
 				if (vcount == VBACK_TIME)
