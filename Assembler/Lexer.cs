@@ -140,6 +140,7 @@ public class Lexer
                         position += regName.Length;
                         linePosition += regName.Length;
                         matched = true;
+                        break;
                     }
                 }
                 

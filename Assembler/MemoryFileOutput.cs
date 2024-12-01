@@ -25,6 +25,8 @@ public class MemoryFileOutput
             addresses += "  " + i.ToString("D") + " : " + Convert.ToString(_machineCode[i], toBase) + "\n";
         }
 
+        addresses += "  [" + _machineCode.Length.ToString("D") + "..65535] : 0";
+
         return addresses;
     }
     

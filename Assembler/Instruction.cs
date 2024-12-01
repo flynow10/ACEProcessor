@@ -4,19 +4,19 @@ public class Instruction
 {
     // Load
     public static readonly Instruction LoadByte = new("Load Byte", "lb", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0000011, InstructionFormat.I);
+        [Argument.Register, Argument.RegisterImmediate], 0b0000011, InstructionFormat.I);
 
     public static readonly Instruction LoadHalfWord = new("Load Half Word", "lh", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0000011, InstructionFormat.I);
+        [Argument.Register, Argument.RegisterImmediate], 0b0000011, InstructionFormat.I);
 
     public static readonly Instruction LoadWord = new("Load Word", "lw", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0000011, InstructionFormat.I);
+        [Argument.Register, Argument.RegisterImmediate], 0b0000011, InstructionFormat.I);
 
     public static readonly Instruction LoadByteUnsigned = new("Load Byte Unsigned", "lbu", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0000011, InstructionFormat.I);
+        [Argument.Register, Argument.RegisterImmediate], 0b0000011, InstructionFormat.I);
 
     public static readonly Instruction LoadHalfUnsigned = new("Load Half Unsigned", "lhu", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0000011, InstructionFormat.I);
+        [Argument.Register, Argument.RegisterImmediate], 0b0000011, InstructionFormat.I);
 
     // public static readonly Instruction LoadAddress = new("Load Address", "la", true,
     //     [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
@@ -26,13 +26,13 @@ public class Instruction
 
     // Store
     public static readonly Instruction StoreByte = new("Store Byte", "sb", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0100011, InstructionFormat.S);
+        [Argument.Register, Argument.RegisterImmediate], 0b0100011, InstructionFormat.S);
 
     public static readonly Instruction StoreHalfWord = new("Store Half Word", "sh", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0100011, InstructionFormat.S);
+        [Argument.Register, Argument.RegisterImmediate], 0b0100011, InstructionFormat.S);
 
     public static readonly Instruction StoreWord = new("Store Word", "sw", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b0100011, InstructionFormat.S);
+        [Argument.Register, Argument.RegisterImmediate], 0b0100011, InstructionFormat.S);
 
     // Shift
     public static readonly Instruction ShiftLeft = new("Shift Left", "sll", false,
@@ -119,6 +119,12 @@ public class Instruction
     public static readonly Instruction SetNotEqualZero = new("Set If rs != zero", "snez", true,
         [Argument.Register, Argument.Register], 0, InstructionFormat.P);
 
+    public static readonly Instruction SetLessZero = new("Set If rs < zero", "sltz", true,
+        [Argument.Register, Argument.Register], 0, InstructionFormat.P);
+
+    public static readonly Instruction SetGreaterZero = new("Set If rs > zero", "sgtz", true,
+        [Argument.Register, Argument.Register], 0, InstructionFormat.P);
+
     // Branches
     public static readonly Instruction BranchEq = new("Branch Equal", "beq", false,
         [Argument.Register, Argument.Register, Argument.Immediate], 0b1100011, InstructionFormat.B);
@@ -135,31 +141,72 @@ public class Instruction
     public static readonly Instruction BranchLessUnsigned = new("Branch Less Than Unsigned", "bltu", false,
         [Argument.Register, Argument.Register, Argument.Immediate], 0b1100011, InstructionFormat.B);
 
-    public static readonly Instruction BranchGreaterEqUnsigned = new("Branch Greater Than Equal Unsigned", "bgeu", false,
+    public static readonly Instruction BranchGreaterEqUnsigned = new("Branch Greater Than Equal Unsigned", "bgeu",
+        false,
         [Argument.Register, Argument.Register, Argument.Immediate], 0b1100011, InstructionFormat.B);
     
+    public static readonly Instruction BranchEqZero = new("Branch If rs = 0", "beqz", true,
+        [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+
+    public static readonly Instruction BranchNeqZero = new("Branch If rs != 0", "bnez", true,
+        [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+
+    public static readonly Instruction BranchLessZero = new("Branch If rs < 0", "bltz", true,
+        [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchLessEqZero = new("Branch If rs <= 0", "blez", true,
+        [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchGreaterZero = new("Branch If rs > 0", "bgez", true,
+        [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchGreaterEqZero = new("Branch If rs >= 0", "bgtz", true,
+        [Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchGreater = new("Branch If > ", "bgt", true,
+        [Argument.Register, Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchLessEq = new("Branch If <= ", "ble", true,
+        [Argument.Register, Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchGreaterUnsigned = new("Branch If > Unsigned", "bgtu", true,
+        [Argument.Register, Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction BranchLessEqUnsigned = new("Branch If <= Unsigned", "bleu", true,
+        [Argument.Register, Argument.Register, Argument.Immediate], 0, InstructionFormat.P);
+
     // Move
     public static readonly Instruction Move = new("Copy Register", "mv", true, [Argument.Register, Argument.Register],
         0, InstructionFormat.P);
 
     // Jump & Link
-    public static readonly Instruction JumpLink = new("Jump And Link", "jal", false, [Argument.Register, Argument.Immediate],
+    public static readonly Instruction JumpLink = new("Jump And Link", "jal", false,
+        [Argument.Register, Argument.Immediate],
         0b1101111, InstructionFormat.J);
 
     public static readonly Instruction JumpLinkRegister = new("Jump And Link Register", "jalr", false,
-        [Argument.Register, Argument.Register, Argument.Immediate], 0b1101111, InstructionFormat.J);
+        [Argument.Register, Argument.Register, Argument.Immediate], 0b1100111, InstructionFormat.I);
+    
+    public static readonly Instruction Jump = new("Jump", "j", true, [Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction JumpRegister = new ("Jump Register", "jr", true, [Argument.Register], 0, InstructionFormat.P);
 
     // Sync
-    public static readonly Instruction SynchThread = new("Synch Thread", "fence", false, [], 0b0001111, InstructionFormat.I);
+    public static readonly Instruction SynchThread =
+        new("Synch Thread", "fence", false, [], 0b0001111, InstructionFormat.I);
 
     public static readonly Instruction SynchInstrAndData =
         new("Synch Instruction and Data", "fence.i", false, [], 0b0001111, InstructionFormat.I);
 
     // System
-    public static readonly Instruction SystemCall = new("System Call", "scall", false, [], 0b1110011, InstructionFormat.I);
-    public static readonly Instruction SystemBreak = new("System Break", "sbreak", false, [], 0b1110011, InstructionFormat.I);
+    public static readonly Instruction SystemCall = new("System Call", "scall", false, [], 0b1110011,
+        InstructionFormat.I);
+
+    public static readonly Instruction SystemBreak =
+        new("System Break", "sbreak", false, [], 0b1110011, InstructionFormat.I);
+
     public static readonly Instruction NOP = new("No Operation", "nop", true, [], 0, InstructionFormat.P);
-    
+
     public static Instruction[] AllInstructions =
     [
         LoadByte,
@@ -196,15 +243,29 @@ public class Instruction
         SetLessImmUnsigned,
         SetEqualZero,
         SetNotEqualZero,
+        SetLessZero,
+        SetGreaterZero,
         BranchEq,
         BranchNeq,
         BranchLess,
         BranchGreaterEq,
         BranchLessUnsigned,
         BranchGreaterEqUnsigned,
+        BranchEqZero,
+        BranchNeqZero,
+        BranchLessZero,
+        BranchLessEqZero,
+        BranchGreaterZero,
+        BranchGreaterEqZero,
+        BranchGreater,
+        BranchLessEq,
+        BranchGreaterUnsigned,
+        BranchLessEqUnsigned,
         Move,
         JumpLink,
         JumpLinkRegister,
+        Jump,
+        JumpRegister,
         SynchThread,
         SynchInstrAndData,
         SystemCall,
@@ -245,6 +306,7 @@ public class Instruction
         Register,
         Immediate,
         ShiftAmount,
+        RegisterImmediate,
     }
 
     public enum InstructionFormat

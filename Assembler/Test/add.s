@@ -1,4 +1,17 @@
 .text
-addi x1, zero, 10 # 0b00000000101000000000000010010011
-addi x2, zero, 3  # 0b00000000001100000000000100010011
-add x3, x1, x2    # 0b00000000001000001000000110110011
+    addi    sp,sp,-32
+    sw      ra,28(sp)
+    sw      s0,24(sp)
+    addi    s0,sp,32
+    li      a5,10
+    sw      a5,-20(s0)
+    li      a5,3
+    sw      a5,-24(s0)
+    lw      a4,-20(s0)
+    lw      a5,-24(s0)
+    add     a5,a4,a5
+    mv      a0,a5
+    lw      ra,28(sp)
+    lw      s0,24(sp)
+    addi    sp,sp,32
+    jr      ra

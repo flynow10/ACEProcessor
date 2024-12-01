@@ -12,6 +12,8 @@ public class Register
         { "t0", 0b00101 },
         { "t1", 0b00110 },
         { "t2", 0b00111 },
+        // S0 and FP both reference the same register
+        { "s0", 0b01000 },
         { "fp", 0b01000 }, 
         { "s1", 0b01001 },
         { "a0", 0b01010 },
