@@ -115,9 +115,13 @@ module RISC_V(
 	reg [31:0] to_display;
 	
 	// Memory Control
-	reg requested_mem;
+	wire mem_update_complete;
+	wire mem_align_error;
 	wire [WORD_SIZE-1:0] memory_output;
-	reg [15:0] memory_address;
+	reg requested_mem;
+	reg [31:0] memory_address;
+	reg [31:0] memory_write_data;
+	reg [1:0] write_en;
 
 	// Fetch / Decode
 	reg [31:0] program_counter;
@@ -146,6 +150,8 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
+		else if(mem_align_error == 1'b1)
+			S <= ERROR;
 		else
 			S <= NS;
 	end
@@ -162,7 +168,12 @@ module RISC_V(
 					NS = WAIT_UPDATE;
 				else
 					NS = FETCH;
-			WAIT_UPDATE: NS = FETCH;
+			WAIT_UPDATE: begin
+				if(mem_update_complete == 1'b1)
+					NS = FETCH;
+				else
+					NS = WAIT_UPDATE;
+			end
 			default: NS = ERROR;
 		endcase
 	end
@@ -171,7 +182,7 @@ module RISC_V(
 		if(rst == 1'b0) begin
 			instruction <= 32'b0;
 			requested_mem <= 1'b0;
-			program_counter <= 32'b0;
+			program_counter <= 32'b4;
 		end else
 			case (S)
 				FETCH: begin
@@ -188,7 +199,7 @@ module RISC_V(
 				UPDATE: begin
 					register_write_back <= alu_output;
 					enable_register <= 1'b1;
-					program_counter <= program_counter + 32'b1;
+					program_counter <= program_counter + 32'b4;
 				end
 			endcase
 	end
@@ -222,12 +233,20 @@ module RISC_V(
 		.out(alu_output)
 	);
 
-	processor_memory instruction_memory(
+	byte_addressable memory(
 		.address(memory_address),
-		.clock(clk),
-		.data(0),
-		.wren(1'b0),
-		.q(memory_output)
+		.clk(clk),
+		.error(mem_align_error),
+		.done(mem_update_complete),
+		.write(write_en),
+		.d3(memory_write_data[7:0]),
+		.d2(memory_write_data[15:8]),
+		.d1(memory_write_data[23:16]),
+		.d0(memory_write_data[31:24]),
+		.q3(memory_output[7:0]),
+		.q2(memory_output[15:8]),
+		.q1(memory_output[23:16]),
+		.q0(memory_output[31:24]),
 	);
 
 	always @(*) begin

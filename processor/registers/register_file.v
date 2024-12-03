@@ -24,8 +24,8 @@ always @(posedge clk or negedge rst) begin
     for (i = 0; i < WORD_SIZE; i = i + 1) begin
       registers[i] <= 0;
     end
-		else if(en == 1'b1 & rd != 5'b0)
-			registers[rd] <= data;
+  else if(en == 1'b1 && rd != 5'b0)
+    registers[rd] <= data;
 end
   
 endmodule

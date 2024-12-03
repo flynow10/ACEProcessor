@@ -10,10 +10,10 @@ module program_counter #(
 );
   always @(posedge clk or negedge rst) begin
     if(rst == 1'b0)
-      addr <= 0;
+      addr <= 4;
     else if(wren == 1'b1)
       addr <= new_addr;
     else if(en == 1'b1)
-      addr <= addr + 'd1;
+      addr <= addr + 'd4;
   end
 endmodule
