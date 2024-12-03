@@ -2,7 +2,9 @@ namespace Assembler;
 
 public class Assembler
 {
+    public const int START_ADDRESS = 4;
     readonly List<Lexer.Token> _tokens;
+    private SymbolTable _symbolTable;
     List<uint> _output = new();
 
     private int _currentTokenIndex;
@@ -11,12 +13,14 @@ public class Assembler
 
     public Assembler(string inputFile)
     {
+        _symbolTable = new SymbolTable();
         _tokens = Lexer.Tokenize(inputFile);
         Console.WriteLine(Lexer.Stringify(_tokens));
     }
 
     public uint[] Assemble()
     {
+        PopulateSymbolTable();
         _output = new List<uint>();
         while (CurrentToken.TokenType != Lexer.TokenType.EOF)
         {
@@ -29,12 +33,53 @@ public class Assembler
                     ParseInstruction();
                     break;
                 case Lexer.TokenType.Label:
+                    EatToken(Lexer.TokenType.Label);
+                    EatToken(Lexer.TokenType.EOL);
                     break;
                 default: throw new Exception($"Failed to parse statement on line {CurrentToken.Line}");
             }
         }
 
         return _output.ToArray();
+    }
+
+    private void PopulateSymbolTable()
+    {
+        _symbolTable = new SymbolTable();
+        int address = START_ADDRESS - 4;
+        int currentTokenIndex = 0;
+        while (currentTokenIndex < _tokens.Count)
+        {
+            Lexer.Token token = _tokens[currentTokenIndex];
+
+            if (token.TokenType == Lexer.TokenType.Label)
+            {
+                _symbolTable.Labels.Add(token.Value, (uint)(address + 4));
+                currentTokenIndex++;
+            }
+            else if (token.TokenType == Lexer.TokenType.Instruction || token.TokenType == Lexer.TokenType.Directive)
+            {
+                if (token.TokenType == Lexer.TokenType.Instruction)
+                {
+                    address += 4;
+                }
+
+                while (currentTokenIndex < _tokens.Count && _tokens[currentTokenIndex].TokenType != Lexer.TokenType.EOL)
+                {
+                    currentTokenIndex++;
+                }
+            }
+            else if (token.TokenType == Lexer.TokenType.EOF)
+            {
+                break;
+            }
+            else
+            {
+                throw new Exception($"Unexpected token when creating Symbol Table {token.TokenType} at line {CurrentToken.Line}");
+            }
+
+            currentTokenIndex++;
+        }
     }
 
     private Lexer.Token EatToken(params Lexer.TokenType[] tokenTypes)
@@ -79,13 +124,13 @@ public class Assembler
                     ParseSFormat(ref assemBinary, instructionType);
                     break;
                 case Instruction.InstructionFormat.U:
-                    ParseUFormat(ref assemBinary, instructionType);
+                    ParseUFormat(ref assemBinary);
                     break;
                 case Instruction.InstructionFormat.B:
                     ParseBFormat(ref assemBinary, instructionType);
                     break;
                 case Instruction.InstructionFormat.J:
-                    ParseJFormat(ref assemBinary, instructionType);
+                    ParseJFormat(ref assemBinary);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -248,12 +293,16 @@ public class Assembler
         assemBinary |= (uint)(((immediate >> 5) & 0b1111111) << 25);
     }
 
-    private void ParseUFormat(ref uint assemBinary, Instruction instruction)
+    private void ParseUFormat(ref uint assemBinary)
     {
         ushort destReg = ParseRegister();
         EatToken(Lexer.TokenType.Separator);
         int immediate = ParseImmediate();
+        StoreUFormat(ref assemBinary, destReg, immediate);
+    }
 
+    private void StoreUFormat(ref uint assemBinary, ushort destReg, int immediate)
+    {
         assemBinary |= (uint)(destReg << 7);
         assemBinary |= (uint)(immediate << 12);
     }
@@ -286,7 +335,7 @@ public class Assembler
                 func3 = 0b111;
                 break;
         }
-        
+
         StoreBFormat(ref assemBinary, src1Reg, src2Reg, func3, immediate);
     }
 
@@ -301,7 +350,7 @@ public class Assembler
         assemBinary |= (uint)((immediate >> 12) & 0b1) << 31;
     }
 
-    private void ParseJFormat(ref uint assemBinary, Instruction instruction)
+    private void ParseJFormat(ref uint assemBinary)
     {
         ushort destReg = ParseRegister();
         EatToken(Lexer.TokenType.Separator);
@@ -513,6 +562,32 @@ public class Assembler
                 StoreIFormat(ref assemBinary, 0, srcReg, 0, 0);
                 break;
             }
+            case "ret":
+            {
+                assemBinary = Instruction.JumpLinkRegister.Opcode;
+                StoreIFormat(ref assemBinary, 0, 0, 0, 0);
+                break;
+            }
+            case "call":
+            {
+                assemBinary = Instruction.AddUpperImmPC.Opcode;
+                int offset = ParseImmediate();
+                StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
+                _output.Add(assemBinary);
+                assemBinary = Instruction.JumpLinkRegister.Opcode;
+                StoreIFormat(ref assemBinary, 1, 6, 0, offset & 0xfffff);
+                break;
+            }
+            case "tail":
+            {
+                assemBinary = Instruction.AddUpperImmPC.Opcode;
+                int offset = ParseImmediate();
+                StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
+                _output.Add(assemBinary);
+                assemBinary = Instruction.JumpLinkRegister.Opcode;
+                StoreIFormat(ref assemBinary, 0, 6, 0, offset & 0xfffff);
+                break;
+            }
         }
 
         _output.Add(assemBinary);
@@ -529,7 +604,14 @@ public class Assembler
         Lexer.Token immediateToken = EatToken(Lexer.TokenType.Literal, Lexer.TokenType.Identifier);
         if (immediateToken.TokenType == Lexer.TokenType.Identifier)
         {
-            throw new NotImplementedException();
+            if (_symbolTable.Labels.TryGetValue(immediateToken.Value, out var label))
+            {
+                return (int)label;
+            }
+            else
+            {
+                throw new Exception($"Undefined label: {immediateToken.Value}");
+            }
         }
 
         int fromBase = immediateToken.Value.Contains('x') ? 16 : 10;

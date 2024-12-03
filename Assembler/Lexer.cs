@@ -80,24 +80,24 @@ public class Lexer
                 linePosition++;
                 continue;
             }
-
-            if (c == '.')
-            {
-                position++;
-                linePosition++;
-                string remainingInput = input.Substring(position);
-                string directive = new Regex("^[A-Za-z]+").Match(remainingInput).Value;
-                tokens.Add(new Token(TokenType.Directive, directive, line));
-                position += directive.Length;
-                linePosition += directive.Length;
-                continue;
-            }
+    
+            // if (c == '.')
+            // {
+            //     position++;
+            //     linePosition++;
+            //     string remainingInput = input.Substring(position);
+            //     string directive = new Regex("^[A-Za-z]+").Match(remainingInput).Value;
+            //     tokens.Add(new Token(TokenType.Directive, directive, line));
+            //     position += directive.Length;
+            //     linePosition += directive.Length;
+            //     continue;
+            // }
             
 
-            if (char.IsLetter(c))
+            if (char.IsLetter(c) || c == '_' || c == '.')
             {
                 string remainingInput = input.Substring(position);
-                Regex labelMatch = new Regex("^[A-Za-z][A-Za-z0-9_]*(?=:)");
+                Regex labelMatch = new Regex("^[A-Za-z_.][A-Za-z0-9_.]*(?=:)");
                 if (labelMatch.IsMatch(remainingInput))
                 {
                     string label = labelMatch.Match(remainingInput).Value;
@@ -110,7 +110,7 @@ public class Lexer
                 matched = false;
                 foreach (Instruction instruction in Instruction.AllInstructions)
                 {
-                    if (remainingInput.ToLower().StartsWith(instruction.Keyword + " "))
+                    if (new Regex($"^{instruction.Keyword}\\b").IsMatch(remainingInput.ToLower()))
                     {
                         tokens.Add(new Token(TokenType.Instruction, instruction.Keyword, line));
                         position += instruction.Keyword.Length;
@@ -147,7 +147,7 @@ public class Lexer
                 if(matched)
                     continue;
 
-                string matchedLabel = new Regex("^[A-Za-z][A-Za-z0-9_]*").Match(remainingInput).Value;
+                string matchedLabel = new Regex("^[A-Za-z_.][A-Za-z0-9_.]*").Match(remainingInput).Value;
                 tokens.Add(new Token(TokenType.Identifier, matchedLabel, line));
                 position += matchedLabel.Length;
                 linePosition += matchedLabel.Length;

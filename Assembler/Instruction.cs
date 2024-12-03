@@ -191,6 +191,12 @@ public class Instruction
     
     public static readonly Instruction JumpRegister = new ("Jump Register", "jr", true, [Argument.Register], 0, InstructionFormat.P);
 
+    public static readonly Instruction Return = new("Return From Subroutine", "ret", true, [], 0, InstructionFormat.P);
+    
+    public static readonly Instruction Call = new ("Call Subroutine", "call", true, [Argument.Immediate], 0, InstructionFormat.P);
+    
+    public static readonly Instruction Tail = new ("Tail Call Far Away Subroutine", "tail", true, [Argument.Immediate], 0, InstructionFormat.P);
+
     // Sync
     public static readonly Instruction SynchThread =
         new("Synch Thread", "fence", false, [], 0b0001111, InstructionFormat.I);
@@ -266,6 +272,9 @@ public class Instruction
         JumpLinkRegister,
         Jump,
         JumpRegister,
+        Return,
+        Call,
+        Tail,
         SynchThread,
         SynchInstrAndData,
         SystemCall,
