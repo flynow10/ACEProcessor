@@ -56,11 +56,11 @@ __mulsi3:
 	mv	a2,a0
 	li	a0,0
 .L8:
-    andi	a3,a1,1
-    beqz	a3, .L9
-    add	a0,a0,a2
+  andi	a3,a1,1
+  beqz	a3, .L9
+  add	a0,a0,a2
 .L9:
-    srli	a1,a1,0x1
-    slli	a2,a2,0x1
-    bnez	a1, .L8
-    ret
+  srli	a1,a1,0x1
+  slli	a2,a2,0x1
+  bnez	a1, .L8
+  ret
