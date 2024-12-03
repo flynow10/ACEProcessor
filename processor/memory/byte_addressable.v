@@ -45,7 +45,6 @@ always @(*) begin
   //   2'b10: q0 = memory_output[15:8];
   //   2'b11: q0 = memory_output[7:0];
   // endcase
-  
 
   if(write == 2'b0)
     compiled_data = {q0, q1, q2, q3};
@@ -55,6 +54,8 @@ always @(*) begin
     compiled_data = {d0, d1, q2, q3};
   else if(write == 2'b11)
     compiled_data = {d0, d1, d2, d3};
+  else
+    compiled_data = 32'd0;
   
   case (S)
     START: begin

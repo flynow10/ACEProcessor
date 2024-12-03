@@ -97,19 +97,21 @@ module RISC_V(
 	assign rst = KEY[2];
 
 	// FSM Control
-	parameter START = 3'b0,
-						FETCH = 3'b1,
-						WAIT_FETCH = 3'b10,
-						DECODE = 3'b11,
-						EXECUTE = 3'b100,
-						UPDATE = 3'b101,
-						WAIT_UPDATE = 3'b110,
-						ERROR = 3'b111;
+	parameter START = 4'b0,
+						FETCH = 4'b1,
+						WAIT_FETCH = 4'b10,
+						DECODE = 4'b11,
+						EXECUTE = 4'b100,
+						MEM_ACCESS = 4'b101,
+						WAIT_MEM_ACCESS = 4'b110,
+						UPDATE = 4'b111,
+						WAIT_UPDATE = 4'b1000,
+						ERROR = 4'b1111;
 
-	reg [2:0] S;
-	reg [2:0] NS;
+	reg [3:0] S;
+	reg [3:0] NS;
 
-	assign LEDR[2:0] = S;
+	assign LEDR[3:0] = S;
 
 	// Display
 	reg [31:0] to_display;
@@ -118,7 +120,7 @@ module RISC_V(
 	wire mem_update_complete;
 	wire mem_align_error;
 	wire [WORD_SIZE-1:0] memory_output;
-	reg requested_mem;
+	reg need_write_mem;
 	reg [31:0] memory_address;
 	reg [31:0] memory_write_data;
 	reg [1:0] write_en;
@@ -126,14 +128,22 @@ module RISC_V(
 	// Fetch / Decode
 	reg [31:0] program_counter;
 
+	wire decode_error;
 	reg [WORD_SIZE-1:0] instruction;
 	wire [5:0] rd;
 	wire [5:0] rs1;
 	wire [5:0] rs2;
+	wire rs1_use_pc;
 	wire rs2_use_imm;
 	wire [WORD_SIZE-1:0] immediate;
 	wire [3:0] alu_op;
-	wire store_register;
+	wire [2:0] reg_load_size;
+	wire [1:0] mem_write_size;
+	wire mem_to_reg;
+	wire [2:0] branch_condition;
+	wire branch;
+	wire jump;
+	wire jal_or_jalr;
 
 	wire [WORD_SIZE-1:0] rv1;
 	wire [WORD_SIZE-1:0] rv2;
@@ -143,6 +153,7 @@ module RISC_V(
 	reg [WORD_SIZE-1:0] alu_input_b;
 	wire [WORD_SIZE-1:0] alu_output;
 	reg enable_register;
+	wire branch_taken;
 
 	// Mem write back
 	reg [WORD_SIZE-1:0] register_write_back;
@@ -150,7 +161,7 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(mem_align_error == 1'b1)
+		else if(mem_align_error == 1'b1 || decode_error == 1'b1)
 			S <= ERROR;
 		else
 			S <= NS;
@@ -162,9 +173,11 @@ module RISC_V(
 			FETCH: NS = WAIT_FETCH;
 			WAIT_FETCH: NS = DECODE;
 			DECODE: NS = EXECUTE;
-			EXECUTE: NS = UPDATE;
+			EXECUTE: NS = MEM_ACCESS;
+			MEM_ACCESS: NS = WAIT_MEM_ACCESS;
+			WAIT_MEM_ACCESS: NS = UPDATE;
 			UPDATE:
-				if(requested_mem == 1'b1)
+				if(need_write_mem == 1'b1)
 					NS = WAIT_UPDATE;
 				else
 					NS = FETCH;
@@ -181,25 +194,45 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0) begin
 			instruction <= 32'b0;
-			requested_mem <= 1'b0;
-			program_counter <= 32'b4;
+			need_write_mem <= 1'b0;
+			program_counter <= 32'd4;
 		end else
 			case (S)
 				FETCH: begin
+					need_write_mem <= 1'b0;
 					enable_register <= 1'b0;
 					memory_address <= program_counter;
+					write_en <= 2'b0;
 				end
 				DECODE: begin
 					instruction <= memory_output;
 				end
 				EXECUTE: begin
-					alu_input_a <= rv1;
+					alu_input_a <= rs1_use_pc == 1'b0 ? rv1 : program_counter;
 					alu_input_b <= rs2_use_imm == 1'b0 ? rv2 : immediate;
+					need_write_mem <= mem_write_size != 2'b0;
+				end
+				MEM_ACCESS: begin
+					memory_address <= alu_output;
 				end
 				UPDATE: begin
-					register_write_back <= alu_output;
+					if(jump == 1'b1)
+						register_write_back <= program_counter + 32'd4;
+					else if(mem_to_reg == 1'b1)
+						register_write_back <= memory_output;
+					else
+						register_write_back <= alu_output;			
 					enable_register <= 1'b1;
-					program_counter <= program_counter + 32'b4;
+					write_en <= mem_write_size;
+					if(jump == 1'b1) begin
+						if(jal_or_jalr == 1'b1)
+							program_counter <= program_counter + immediate;
+						else
+							program_counter <= rv1 + immediate;
+					end else if(branch == 1'b1 & branch_taken == 1'b1)
+						program_counter <= program_counter + immediate;
+					else
+						program_counter <= program_counter + 32'd4;
 				end
 			endcase
 	end
@@ -209,9 +242,18 @@ module RISC_V(
 		.rd(rd),
 		.rs1(rs1),
 		.rs2(rs2),
+		.rs1_use_pc(rs1_use_pc),
 		.rs2_use_imm(rs2_use_imm),
 		.immediate(immediate),
-		.alu_op(alu_op)
+		.alu_op(alu_op),
+		.reg_load_size(reg_load_size),
+		.mem_write_size(mem_write_size),
+		.mem_to_reg(mem_to_reg),
+		.branch_condition(branch_condition),
+		.branch(branch),
+		.jump(jump),
+		.jal_or_jalr(jal_or_jalr),
+		.decode_error(decode_error)
 	);
 
 	register_file #(WORD_SIZE) registers(
@@ -233,6 +275,13 @@ module RISC_V(
 		.out(alu_output)
 	);
 
+	branch_condition #(WORD_SIZE) branch_cond(
+		.r1(rv1),
+		.r2(rv2),
+		.branch_condition(branch_condition),
+		.branch_taken(branch_taken)
+	);
+
 	byte_addressable memory(
 		.address(memory_address),
 		.clk(clk),
@@ -246,7 +295,7 @@ module RISC_V(
 		.q3(memory_output[7:0]),
 		.q2(memory_output[15:8]),
 		.q1(memory_output[23:16]),
-		.q0(memory_output[31:24]),
+		.q0(memory_output[31:24])
 	);
 
 	always @(*) begin

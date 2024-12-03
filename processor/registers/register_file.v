@@ -17,14 +17,41 @@ reg [WORD_SIZE-1:0] registers [31:0];
 assign rv1 = registers[rs1];
 assign rv2 = registers[rs2];
 
-integer i;
-
 always @(posedge clk or negedge rst) begin
-  if(rst == 1'b0)
-    for (i = 0; i < WORD_SIZE; i = i + 1) begin
-      registers[i] <= 0;
-    end
-  else if(en == 1'b1 && rd != 5'b0)
+  if(rst == 1'b0) begin
+      registers[0] <= 32'd0;
+      registers[1] <= 32'd0;
+      registers[2] <= 32'd0;
+      registers[3] <= 32'd0;
+      registers[4] <= 32'd0;
+      registers[5] <= 32'd0;
+      registers[6] <= 32'd0;
+      registers[7] <= 32'd0;
+      registers[8] <= 32'd0;
+      registers[9] <= 32'd0;
+      registers[10] <= 32'd0;
+      registers[11] <= 32'd0;
+      registers[12] <= 32'd0;
+      registers[13] <= 32'd0;
+      registers[14] <= 32'd0;
+      registers[15] <= 32'd0;
+      registers[16] <= 32'd0;
+      registers[17] <= 32'd0;
+      registers[18] <= 32'd0;
+      registers[19] <= 32'd0;
+      registers[20] <= 32'd0;
+      registers[21] <= 32'd0;
+      registers[22] <= 32'd0;
+      registers[23] <= 32'd0;
+      registers[24] <= 32'd0;
+      registers[25] <= 32'd0;
+      registers[26] <= 32'd0;
+      registers[27] <= 32'd0;
+      registers[28] <= 32'd0;
+      registers[29] <= 32'd0;
+      registers[30] <= 32'd0;
+      registers[31] <= 32'd0;
+  end else if(en == 1'b1 && rd != 5'b0)
     registers[rd] <= data;
 end
   
