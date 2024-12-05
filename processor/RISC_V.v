@@ -153,6 +153,7 @@ module RISC_V(
 	reg [WORD_SIZE-1:0] alu_input_b;
 	wire [WORD_SIZE-1:0] alu_output;
 	reg enable_register;
+	reg [WORD_SIZE-1:0] raw_reg_write_back;
 	wire branch_taken;
 
 	// Mem write back
@@ -217,11 +218,18 @@ module RISC_V(
 				end
 				UPDATE: begin
 					if(jump == 1'b1)
-						register_write_back <= program_counter + 32'd4;
+						raw_reg_write_back <= program_counter + 32'd4;
 					else if(mem_to_reg == 1'b1)
-						register_write_back <= memory_output;
+						raw_reg_write_back <= memory_output;
 					else
-						register_write_back <= alu_output;			
+						raw_reg_write_back <= alu_output;
+					case (reg_load_size)
+						3'b100: register_write_back <= {{24{1'b0}}, raw_reg_write_back[7:0]};
+						3'b101:	register_write_back <= {{16{1'b0}}, raw_reg_write_back[15:0]};
+						3'b000: register_write_back <= {{24{raw_reg_write_back[7]}}, raw_reg_write_back[7:0]};
+						3'b001:	register_write_back <= {{16{raw_reg_write_back[15]}}, raw_reg_write_back[15:0]};
+						default: register_write_back <= raw_reg_write_back;
+					endcase
 					enable_register <= 1'b1;
 					write_en <= mem_write_size;
 					if(jump == 1'b1) begin
