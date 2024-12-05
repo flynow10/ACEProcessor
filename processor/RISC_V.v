@@ -114,6 +114,7 @@ module RISC_V(
 	reg [3:0] NS;
 
 	assign LEDR[3:0] = S;
+	assign LEDR[4] = mem_align_error;
 	assign LEDR[9:5] = SW[9:5];
 
 	// Display
@@ -166,8 +167,6 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(mem_align_error == 1'b1)
-			S <= MEM_ERROR;
 		else
 			S <= NS;
 	end
@@ -177,7 +176,7 @@ module RISC_V(
 			START: NS = FETCH;
 			FETCH: NS = WAIT_FETCH;
 			WAIT_FETCH: NS = DECODE;
-			DECODE: NS = EXECUTE
+			DECODE: NS = EXECUTE;
 			EXECUTE: begin
 				if(decode_error == 1'b0)
 					NS = MEM_ACCESS;
