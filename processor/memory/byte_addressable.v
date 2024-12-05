@@ -33,7 +33,7 @@ always @(posedge clk) begin
 end
 
 always @(*) begin
-  error = address[1:0] != 2'b0;
+  error = (address[1:0] != 2'b0);
   q3 = memory_output[7:0];
   q2 = memory_output[15:8];
   q1 = memory_output[23:16];

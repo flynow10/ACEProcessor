@@ -167,8 +167,6 @@ module RISC_V(
 		if(rst == 1'b0)
 			S <= START;
 		else if(mem_align_error == 1'b1)
-			S <= DECODE_ERROR;
-		else if(decode_error == 1'b1)
 			S <= MEM_ERROR;
 		else
 			S <= NS;
@@ -179,8 +177,13 @@ module RISC_V(
 			START: NS = FETCH;
 			FETCH: NS = WAIT_FETCH;
 			WAIT_FETCH: NS = DECODE;
-			DECODE: NS = EXECUTE;
-			EXECUTE: NS = MEM_ACCESS;
+			DECODE: NS = EXECUTE
+			EXECUTE: begin
+				if(decode_error == 1'b0)
+					NS = MEM_ACCESS;
+				else
+					NS = DECODE_ERROR;
+			end
 			MEM_ACCESS: NS = WAIT_MEM_ACCESS;
 			WAIT_MEM_ACCESS: NS = UPDATE;
 			UPDATE:
@@ -318,7 +321,7 @@ module RISC_V(
 	always @(*) begin
 		case (~KEY[1:0])
 			2'b00: to_display = alu_output;
-			2'b01: to_display = rv1;
+			2'b01: to_display = memory_address;
 			2'b10: to_display = debug_reg_out;
 			2'b11: to_display = program_counter;
 		endcase
