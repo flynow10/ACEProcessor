@@ -61,6 +61,11 @@ public class Assembler
             {
                 if (token.TokenType == Lexer.TokenType.Instruction)
                 {
+                    Instruction instructionType = Instruction.GetByKeyword(token.Value);
+                    if (new[] { "call", "tail" }.Contains(instructionType.Keyword))
+                    {
+                        address += 4;
+                    }
                     address += 4;
                 }
 
