@@ -6,7 +6,7 @@ output [6:0]seg7_dig2,
 output [6:0]seg7_dig3,
 output [6:0]seg7_dig4,
 output [6:0]seg7_dig5,
-output reg overflow
+output overflow
 );
 
 assign overflow = val > 32'hffffff;
