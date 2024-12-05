@@ -205,7 +205,6 @@ module RISC_V(
 			alu_input_a <= 32'd0;
 			alu_input_b <= 32'd0;
 			write_en <= 2'b0;
-			raw_reg_write_back <= 32'd0;
 			register_write_back <= 32'd0;
 			memory_address <= 32'b0;
 			instruction <= 32'b0;
