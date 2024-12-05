@@ -89,10 +89,15 @@ always @(*) begin
       rs1_use_pc = opcode == AUIPC ? 1'b1 : 1'b0;
     end
     ARITH_IMM: begin
-      alu_op = {1'b0, instruction[14:12]};
+      if(instruction[14:12] == 3'b101) begin
+        alu_op = {instruction[30], instruction[14:12]};
+        immediate = {{27{1'b0}}, instruction[24:20]};
+      end else begin
+        alu_op = {1'b0, instruction[14:12]};
+        immediate = sign_extended_imm_12;
+      end
       rs2 = 5'b0;
       rs2_use_imm = 1'b1;
-      immediate = sign_extended_imm_12;
     end
     BRANCH: begin
       rd = 5'b0;

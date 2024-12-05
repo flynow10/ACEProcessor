@@ -135,9 +135,9 @@ module RISC_V(
 
 	wire decode_error;
 	reg [WORD_SIZE-1:0] instruction;
-	wire [5:0] rd;
-	wire [5:0] rs1;
-	wire [5:0] rs2;
+	wire [4:0] rd;
+	wire [4:0] rs1;
+	wire [4:0] rs2;
 	wire rs1_use_pc;
 	wire rs2_use_imm;
 	wire [WORD_SIZE-1:0] immediate;
@@ -320,7 +320,7 @@ module RISC_V(
 	always @(*) begin
 		case (~KEY[1:0])
 			2'b00: to_display = alu_output;
-			2'b01: to_display = memory_address;
+			2'b01: to_display = immediate;
 			2'b10: to_display = debug_reg_out;
 			2'b11: to_display = program_counter;
 		endcase
