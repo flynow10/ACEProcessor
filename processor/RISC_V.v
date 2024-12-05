@@ -324,13 +324,14 @@ module RISC_V(
 	);
 
 	always @(*) begin
-		case (~SW[3:1])
+		case (SW[4:2])
 			3'b000: to_display = alu_output;
 			3'b001: to_display = instruction;
 			3'b010: to_display = debug_reg_out;
 			3'b011: to_display = memory_output;
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
+			3'b110: to_display = register_write_back;
 		endcase
 	end
 
