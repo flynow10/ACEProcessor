@@ -106,15 +106,19 @@ module RISC_V(
 						WAIT_MEM_ACCESS = 4'b110,
 						UPDATE = 4'b111,
 						WAIT_UPDATE = 4'b1000,
-						ERROR = 4'b1111;
+						DECODE_ERROR = 4'b1110,
+						MEM_ERROR = 4'b1101,
+						FSM_ERROR = 4'b1111;
 
 	reg [3:0] S;
 	reg [3:0] NS;
 
 	assign LEDR[3:0] = S;
+	assign LEDR[9:5] = SW[9:5];
 
 	// Display
 	reg [31:0] to_display;
+	wire [31:0] debug_reg_out;
 	
 	// Memory Control
 	wire mem_update_complete;
@@ -162,8 +166,10 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(mem_align_error == 1'b1 || decode_error == 1'b1)
-			S <= ERROR;
+		else if(mem_align_error == 1'b1)
+			S <= DECODE_ERROR;
+		else if(decode_error == 1'b1)
+			S <= MEM_ERROR;
 		else
 			S <= NS;
 	end
@@ -188,15 +194,16 @@ module RISC_V(
 				else
 					NS = WAIT_UPDATE;
 			end
-			default: NS = ERROR;
+			default: NS = FSM_ERROR;
 		endcase
 	end
 
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0) begin
+			memory_address <= 32'b0;
 			instruction <= 32'b0;
 			need_write_mem <= 1'b0;
-			program_counter <= 32'd4;
+			program_counter <= 32'd0;
 		end else
 			case (S)
 				FETCH: begin
@@ -271,9 +278,11 @@ module RISC_V(
 		.rd(rd),
 		.rs1(rs1),
 		.rs2(rs2),
+		.debug_reg(SW[9:5]),
 		.data(register_write_back),
 		.rv1(rv1),
-		.rv2(rv2)
+		.rv2(rv2),
+		.debug_reg_out(debug_reg_out)
 	);
 
 	ALU #(WORD_SIZE) alu(
@@ -310,7 +319,7 @@ module RISC_V(
 		case (~KEY[1:0])
 			2'b00: to_display = alu_output;
 			2'b01: to_display = rv1;
-			2'b10: to_display = rv2;
+			2'b10: to_display = debug_reg_out;
 			2'b11: to_display = program_counter;
 		endcase
 	end
