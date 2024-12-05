@@ -24,8 +24,8 @@ always @(posedge clk or negedge rst) begin
   if(rst == 1'b0) begin
       registers[0] <= 32'd0;
       registers[1] <= 32'd0;
-      registers[2] <= 32'd0;
-      registers[3] <= 32'd0;
+      registers[2] <= 32'h7fff;
+      registers[3] <= 32'h1000;
       registers[4] <= 32'd0;
       registers[5] <= 32'd0;
       registers[6] <= 32'd0;
