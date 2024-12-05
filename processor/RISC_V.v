@@ -202,6 +202,11 @@ module RISC_V(
 
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0) begin
+			alu_input_a <= 32'd0;
+			alu_input_b <= 32'd0;
+			write_en <= 2'b0;
+			raw_reg_write_back <= 32'd0;
+			register_write_back <= 32'd0;
 			memory_address <= 32'b0;
 			instruction <= 32'b0;
 			need_write_mem <= 1'b0;
@@ -320,9 +325,9 @@ module RISC_V(
 	always @(*) begin
 		case (~KEY[1:0])
 			2'b00: to_display = alu_output;
-			2'b01: to_display = immediate;
+			2'b01: to_display = instruction;
 			2'b10: to_display = debug_reg_out;
-			2'b11: to_display = program_counter;
+			2'b11: to_display = memory_output;
 		endcase
 	end
 
