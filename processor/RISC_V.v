@@ -205,7 +205,6 @@ module RISC_V(
 			alu_input_a <= 32'd0;
 			alu_input_b <= 32'd0;
 			write_en <= 2'b0;
-			raw_reg_write_back <= 32'd0;
 			register_write_back <= 32'd0;
 			memory_address <= 32'b0;
 			instruction <= 32'b0;
@@ -232,12 +231,6 @@ module RISC_V(
 					memory_address <= alu_output;
 				end
 				UPDATE: begin
-					if(jump == 1'b1)
-						raw_reg_write_back <= program_counter + 32'd4;
-					else if(mem_to_reg == 1'b1)
-						raw_reg_write_back <= memory_output;
-					else
-						raw_reg_write_back <= alu_output;
 					case (reg_load_size)
 						3'b100: register_write_back <= {{24{1'b0}}, raw_reg_write_back[7:0]};
 						3'b101:	register_write_back <= {{16{1'b0}}, raw_reg_write_back[15:0]};
@@ -258,6 +251,16 @@ module RISC_V(
 						program_counter <= program_counter + 32'd4;
 				end
 			endcase
+	end
+
+	// Prepare reg write back at all times
+	always @(*) begin
+		if(jump == 1'b1)
+			raw_reg_write_back = program_counter + 32'd4;
+		else if(mem_to_reg == 1'b1)
+			raw_reg_write_back = memory_output;
+		else
+			raw_reg_write_back = alu_output;
 	end
 
 	instruction_decoder #(WORD_SIZE) instruction_decoder(
@@ -332,6 +335,7 @@ module RISC_V(
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
 			3'b110: to_display = register_write_back;
+			3'b111: to_display = raw_reg_write_back;
 			default: to_display = 32'b0;
 		endcase
 	end
