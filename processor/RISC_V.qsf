@@ -317,7 +317,7 @@ set_location_assignment PIN_E12 -to VGA_R[6]
 set_location_assignment PIN_F13 -to VGA_R[7]
 set_location_assignment PIN_C10 -to VGA_SYNC_N
 set_location_assignment PIN_D11 -to VGA_VS
-set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR simulation/questa -section_id eda_simulation
+set_global_assignment -name VERILOG_FILE io/six_hex_vals.v
 set_global_assignment -name VERILOG_FILE memory/byte_addressable.v
 set_global_assignment -name VERILOG_FILE branch_condition/branch_condition.v
 set_global_assignment -name VERILOG_FILE io/five_decimal_vals_w_neg.v

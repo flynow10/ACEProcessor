@@ -339,7 +339,7 @@ module RISC_V(
 		.seg7_dig1(HEX1),
 		.seg7_dig2(HEX2),
 		.seg7_dig3(HEX3),
-		.seg7_dig4(HEX4)
-		.seg7_dig5(HEX5),
+		.seg7_dig4(HEX4),
+		.seg7_dig5(HEX5)
 	);
 endmodule
