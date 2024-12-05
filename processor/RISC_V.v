@@ -93,7 +93,7 @@ module RISC_V(
 	wire clk;
 	wire rst;
 
-	assign clk = ~KEY[3];
+	assign clk = CLOCK_50;
 	assign rst = KEY[2];
 
 	// FSM Control
@@ -173,7 +173,10 @@ module RISC_V(
 
 	always @(*) begin
 		case (S)
-			START: NS = FETCH;
+			START: if(KEY[3] == 1'b0)
+				NS = FETCH;
+			else
+				NS = START;
 			FETCH: NS = WAIT_FETCH;
 			WAIT_FETCH: NS = DECODE;
 			DECODE: NS = EXECUTE;
