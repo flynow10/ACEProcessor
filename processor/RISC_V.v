@@ -332,6 +332,7 @@ module RISC_V(
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
 			3'b110: to_display = register_write_back;
+			default: to_display = 32'b0;
 		endcase
 	end
 
