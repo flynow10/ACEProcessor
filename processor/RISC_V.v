@@ -211,6 +211,7 @@ module RISC_V(
 			instruction <= 32'b0;
 			need_write_mem <= 1'b0;
 			program_counter <= 32'd0;
+			enable_register <= 1'b0;
 		end else
 			case (S)
 				FETCH: begin
