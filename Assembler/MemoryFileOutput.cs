@@ -22,10 +22,10 @@ public class MemoryFileOutput
         };
         for (int i = 0; i < _machineCode.Length; i++)
         {
-            addresses += "  " + i.ToString("D") + " : " + Convert.ToString(_machineCode[i], toBase) + "\n";
+            addresses += "  " + i.ToString("D") + " : " + Convert.ToString(_machineCode[i], toBase) + ";\n";
         }
 
-        addresses += "  [" + _machineCode.Length.ToString("D") + "..65535] : 0";
+        addresses += "  [" + _machineCode.Length.ToString("D") + "..65535] : 0;";
 
         return addresses;
     }
@@ -34,7 +34,7 @@ public class MemoryFileOutput
     {
         return $"""
                 WIDTH=32;
-                DEPTH={_machineCode.Length};
+                DEPTH=65536;
                 
                 ADDRESS_RADIX=UNS;
                 DATA_RADIX={_format switch
