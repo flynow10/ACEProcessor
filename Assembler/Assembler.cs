@@ -592,6 +592,11 @@ public class Assembler
                 StoreIFormat(ref assemBinary, 0, 6, 0, offset & 0xfffff);
                 break;
             }
+            case "hlt":
+            {
+                assemBinary = 0b1111111;
+                break;
+            }
         }
 
         _output.Add(assemBinary);

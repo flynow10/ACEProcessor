@@ -7,6 +7,7 @@ int main()
   {
     sum = sum + factorial(i);
   }
+  return sum;
 }
 
 int factorial(int n)
