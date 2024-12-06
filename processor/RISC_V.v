@@ -212,6 +212,7 @@ module RISC_V(
 			memory_address <= 32'b0;
 			instruction <= 32'b0;
 			need_write_mem <= 1'b0;
+			memory_write_data <= 32'd0;
 			program_counter <= 32'd0;
 			enable_register <= 1'b0;
 		end else
@@ -243,6 +244,7 @@ module RISC_V(
 					endcase
 					enable_register <= 1'b1;
 					write_en <= mem_write_size;
+					memory_write_data <= rv2;
 					if(jump == 1'b1) begin
 						if(jal_or_jalr == 1'b1)
 							program_counter <= program_counter + immediate;
