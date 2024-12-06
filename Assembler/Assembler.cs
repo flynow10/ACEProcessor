@@ -2,7 +2,7 @@ namespace Assembler;
 
 public class Assembler
 {
-    public const int START_ADDRESS = 4;
+    public const int START_ADDRESS = 0;
     readonly List<Lexer.Token> _tokens;
     private SymbolTable _symbolTable;
     List<uint> _output = new();
@@ -15,7 +15,6 @@ public class Assembler
     {
         _symbolTable = new SymbolTable();
         _tokens = Lexer.Tokenize(inputFile);
-        Console.WriteLine(Lexer.Stringify(_tokens));
     }
 
     public uint[] Assemble()
@@ -577,6 +576,7 @@ public class Assembler
             {
                 assemBinary = Instruction.AddUpperImmPC.Opcode;
                 int offset = ParseImmediate();
+                offset -= _output.Count * 4;
                 StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
                 _output.Add(assemBinary);
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
@@ -587,6 +587,7 @@ public class Assembler
             {
                 assemBinary = Instruction.AddUpperImmPC.Opcode;
                 int offset = ParseImmediate();
+                offset -= _output.Count * 4;
                 StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
                 _output.Add(assemBinary);
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
