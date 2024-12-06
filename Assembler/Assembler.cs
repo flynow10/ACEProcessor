@@ -576,7 +576,7 @@ public class Assembler
             {
                 assemBinary = Instruction.AddUpperImmPC.Opcode;
                 int offset = ParseImmediate();
-                StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
+                StoreUFormat(ref assemBinary, 6, (offset >> 12) + (1 & (offset >> 11)));
                 _output.Add(assemBinary);
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
                 StoreIFormat(ref assemBinary, 1, 6, 0, offset & 0xfffff);
@@ -586,7 +586,7 @@ public class Assembler
             {
                 assemBinary = Instruction.AddUpperImmPC.Opcode;
                 int offset = ParseImmediate();
-                StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
+                StoreUFormat(ref assemBinary, 6, (offset >> 12) + (1 & (offset >> 11)));
                 _output.Add(assemBinary);
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
                 StoreIFormat(ref assemBinary, 0, 6, 0, offset & 0xfffff);
