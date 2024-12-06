@@ -569,7 +569,7 @@ public class Assembler
             case "ret":
             {
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
-                StoreIFormat(ref assemBinary, 0, 0, 0, 0);
+                StoreIFormat(ref assemBinary, 0, 1, 0, 0);
                 break;
             }
             case "call":
