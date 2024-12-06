@@ -106,6 +106,7 @@ module RISC_V(
 						WAIT_MEM_ACCESS = 4'b110,
 						UPDATE = 4'b111,
 						WAIT_UPDATE = 4'b1000,
+						DONE = 4'b1001, // Debug for halt function
 						DECODE_ERROR = 4'b1110,
 						MEM_ERROR = 4'b1101,
 						FSM_ERROR = 4'b1111;
@@ -181,7 +182,9 @@ module RISC_V(
 			WAIT_FETCH: NS = DECODE;
 			DECODE: NS = EXECUTE;
 			EXECUTE: begin
-				if(decode_error == 1'b0)
+				if(instruction[6:0] == 7'b1111111)
+					NS = DONE;
+				else if(decode_error == 1'b0)
 					NS = MEM_ACCESS;
 				else
 					NS = DECODE_ERROR;
@@ -199,6 +202,7 @@ module RISC_V(
 				else
 					NS = WAIT_UPDATE;
 			end
+			DONE: NS = DONE;
 			default: NS = FSM_ERROR;
 		endcase
 	end
