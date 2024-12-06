@@ -576,7 +576,6 @@ public class Assembler
             {
                 assemBinary = Instruction.AddUpperImmPC.Opcode;
                 int offset = ParseImmediate();
-                offset -= _output.Count * 4;
                 StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
                 _output.Add(assemBinary);
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
@@ -587,7 +586,6 @@ public class Assembler
             {
                 assemBinary = Instruction.AddUpperImmPC.Opcode;
                 int offset = ParseImmediate();
-                offset -= _output.Count * 4;
                 StoreUFormat(ref assemBinary, 6, (offset >> 12) & 0xfffff);
                 _output.Add(assemBinary);
                 assemBinary = Instruction.JumpLinkRegister.Opcode;
@@ -612,7 +610,7 @@ public class Assembler
         {
             if (_symbolTable.Labels.TryGetValue(immediateToken.Value, out var label))
             {
-                return (int)label;
+                return (int)label - _output.Count * 4;;
             }
             else
             {
