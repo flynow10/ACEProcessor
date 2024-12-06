@@ -337,7 +337,7 @@ module RISC_V(
 			3'b011: to_display = memory_output;
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
-			3'b110: to_display = register_write_back;
+			3'b110: to_display = program_counter;
 			3'b111: to_display = raw_reg_write_back;
 			default: to_display = 32'b0;
 		endcase
