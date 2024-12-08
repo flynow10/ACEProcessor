@@ -3,6 +3,8 @@
     "util.h": "c",
     "move.h": "c",
     "types.h": "c",
-    "board.h": "c"
+    "board.h": "c",
+    "stdio.h": "c",
+    "movegen.h": "c"
   }
 }

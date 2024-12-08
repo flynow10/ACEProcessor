@@ -4,17 +4,7 @@
 #include <stdbool.h>
 #include "types.h"
 #include "move.h"
-
-typedef struct t_GameState GameState;
-
-struct t_GameState
-{
-  int fiftyMoveCounter;
-  int enPassentFile;
-  int castleRights;
-  Piece lastCapture;
-  GameState *lastGameState;
-};
+#include "gamestate.h"
 
 typedef struct t_Board
 {
@@ -24,6 +14,7 @@ typedef struct t_Board
 } Board;
 
 Board *createBoard();
+void initializeBoard(Board *board);
 
 bool makeMove(Board *board, Move move);
 void undoMove(Board *board, Move move);
