@@ -1,3 +1,12 @@
+	.file	"factorial.c"
+	.option nopic
+	.attribute arch, "rv32i2p1"
+	.attribute unaligned_access, 0
+	.attribute stack_align, 16
+	.text
+	.align	2
+	.globl	main
+	.type	main, @function
 main:
 	addi	sp,sp,-32
 	sw	ra,28(sp)
@@ -11,7 +20,11 @@ main:
 	lw	ra,28(sp)
 	lw	s0,24(sp)
 	addi	sp,sp,32
-	hlt
+	jr	ra
+	.size	main, .-main
+	.align	2
+	.globl	factorial
+	.type	factorial, @function
 factorial:
 	addi	sp,sp,-32
 	sw	ra,28(sp)
@@ -38,15 +51,7 @@ factorial:
 	lw	s0,24(sp)
 	addi	sp,sp,32
 	jr	ra
-__mulsi3:
-	mv	a2,a0
-	li	a0,0
-.L8:
-  andi	a3,a1,1
-  beqz	a3, .L9
-  add	a0,a0,a2
-.L9:
-  srli	a1,a1,0x1
-  slli	a2,a2,0x1
-  bnez	a1, .L8
-  ret
+	.size	factorial, .-factorial
+	.globl	__mulsi3
+	.ident	"GCC: (g04696df09) 14.2.0"
+	.section	.note.GNU-stack,"",@progbits

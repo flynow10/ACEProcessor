@@ -25,7 +25,7 @@ main:
 	lw	ra,28(sp)
 	lw	s0,24(sp)
 	addi	sp,sp,32
-	hlt
+	jr ra
 factorial:
 	addi	sp,sp,-32
 	sw	ra,28(sp)
