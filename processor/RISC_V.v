@@ -165,7 +165,7 @@ module RISC_V(
 	// Mem write back
 	reg [WORD_SIZE-1:0] register_write_back;
 	
-	//vga controller
+	// VGA controller
 	reg vga_write_en;
 	reg [WORD_SIZE-1:0]vga_input_data;
 	reg [12:0]vga_write_address;
@@ -224,6 +224,9 @@ module RISC_V(
 			memory_write_data <= 32'd0;
 			program_counter <= 32'd0;
 			enable_register <= 1'b0;
+			vga_write_address <= 13'd0;
+			vga_input_data <= 32'd0;
+			vga_write_en <= 1'b0;
 		end else
 			case (S)
 				FETCH: begin
@@ -231,6 +234,7 @@ module RISC_V(
 					enable_register <= 1'b0;
 					memory_address <= program_counter;
 					write_en <= 2'b0;
+					vga_write_en <= 1'b0;
 				end
 				DECODE: begin
 					instruction <= memory_output;
@@ -242,6 +246,7 @@ module RISC_V(
 				end
 				MEM_ACCESS: begin
 					memory_address <= alu_output;
+					vga_write_address <= alu_output[12:0];
 				end
 				UPDATE: begin
 					case (reg_load_size)
@@ -252,7 +257,13 @@ module RISC_V(
 						default: register_write_back <= raw_reg_write_back;
 					endcase
 					enable_register <= 1'b1;
-					write_en <= mem_write_size;
+					if(mem_write_size != 2'b0) begin
+						if(memory_address >= 32'h00070000)
+							write_en <= mem_write_size;
+						else
+							vga_write_en <= 1'b1;
+					end
+					vga_input_data <= rv2;
 					memory_write_data <= rv2;
 					if(jump == 1'b1) begin
 						if(jal_or_jalr == 1'b1)
