@@ -5,6 +5,8 @@
     "types.h": "c",
     "board.h": "c",
     "stdio.h": "c",
-    "movegen.h": "c"
+    "movegen.h": "c",
+    "print.h": "c",
+    "chess.h": "c"
   }
 }

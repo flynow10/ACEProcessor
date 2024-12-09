@@ -1,14 +1,6 @@
-void print(char c, int pos);
-int main()
-{
-  print('G', 0);
-  print('a', 1);
-  print('b', 2);
-  print('e', 3);
-  return 0;
-}
+#include "print.h"
 
-void print(char c, int pos)
+void printChar(char c, int pos)
 {
   int asciiVal = (int)c;
   __asm__("lui t0, 0x10000;"
@@ -17,9 +9,9 @@ void print(char c, int pos)
           "lui t2, 0x00fff;"
           "slli t1, t1, 24;"
           "add t1, t1, t2;"
-          "addi t1,t1, 0xfff;"
+          "addi t1,t1,-1;"
           "sw t1, 0(t0);"
           :
-          : "r"(asciiVal) "r"(pos)
+          : "r"(asciiVal), "r"(pos)
           :);
 }
