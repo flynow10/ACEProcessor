@@ -28,7 +28,8 @@ parameter ARITH_REG = 7'b0110011,
           AUIPC = 7'b0010111,
           BRANCH = 7'b1100011,
           JAL = 7'b1101111,
-          JALR = 7'b1100111;
+          JALR = 7'b1100111,
+          ECALL = 7'b1110011;
 
 assign opcode = instruction[6:0];
 
@@ -113,6 +114,11 @@ always @(*) begin
       jump = 1'b1;
       immediate = sign_extended_imm_jal_offset;
       jal_or_jalr = 1'b1;
+    ECALL: begin
+      rd = 5'b0;
+      rs1 = 5'b0;
+      rs2 = 5'b0;
+    end
     end
     default: begin
       decode_error = 1'b1;
