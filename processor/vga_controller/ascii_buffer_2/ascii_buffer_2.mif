@@ -1,4 +1,4 @@
--- Copyright (C) 2023  Intel Corporation. All rights reserved.
+-- Copyright (C) 2024  Intel Corporation. All rights reserved.
 -- Your use of Intel Corporation's design tools, logic functions 
 -- and other software and tools, and any partner logic 
 -- functions, and any output files from any of the foregoing 
@@ -15,13 +15,15 @@
 
 -- Quartus Prime generated Memory Initialization File (.mif)
 
-WIDTH=24;
-DEPTH=19200;
+WIDTH=32;
+DEPTH=4800;
 
 ADDRESS_RADIX=UNS;
-DATA_RADIX=UNS;
+DATA_RADIX=HEX;
 
 CONTENT BEGIN
-	0      :   1;
-	[1..19199]  :   0;
+	[0..79]  :   41FFFFFF;
+	[80..159]  :   42FFFFFF;
+	[160..239]  :   43FFFFFF;
+	[240..4799]  :   00FFFFFF;
 END;

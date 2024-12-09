@@ -16,9 +16,16 @@ module vga_driver (
 	output wire vga_clk,
 	output reg vga_hs,
 	output reg vga_vs,
-	output wire vga_sync_n
+	output wire vga_sync_n,
+	
+	/*-----------------DEBUG-----------------*/
+	input [9:0]SW,
+	input [3:0]KEY,
+	input [9:0]LEDR
 	
 );
+
+/*-----------------DECLARATIONS AND ASSIGNMENTS-----------------*/
 
 reg [1:0]vs, hs;
 reg [1:0]hns, vns;
@@ -32,9 +39,8 @@ assign vga_blank = hblank & vblank;
 assign vga_sync_n = 1'b1;
 assign vga_clk = clk_25;
 
-assign x = (hblank == 1'd1)?hcount:10'd0;
-assign y = (vblank == 1'd1)?vcount:10'd0;
-
+assign x = (hblank == 1'd1)?(hcount):(10'd0);
+assign y = (vblank == 1'd1)?(vcount):(10'd0);
 
 parameter 
 			HDISP = 2'd0,
@@ -47,7 +53,7 @@ parameter
 			VSYNC =	2'd2,
 			VBACK = 2'd3;
 
-	
+
 parameter
 			HDISP_TIME = 10'd639,
 			HFRONT_TIME = 10'd15,
@@ -59,7 +65,11 @@ parameter
 			VSYNC_TIME = 10'd1,
 			VBACK_TIME = 10'd32;
 
-/*			
+
+	
+/*-----------------DEBUG-----------------*/
+
+/*		
 parameter
 			HDISP_TIME = 10'd5,
 			HFRONT_TIME = 10'd5,
@@ -70,8 +80,16 @@ parameter
 			VFRONT_TIME = 10'd5,
 			VSYNC_TIME = 10'd5,
 			VBACK_TIME = 10'd5;
-*/			
+*/	
+/*
+reg [9:0]X_OFFSET;
 
+always @ (*)
+begin
+	X_OFFSET[2:0] = SW[2:0];
+end
+*/
+/*-----------------CODE-----------------*/
 			
 always @ (posedge clk_25 or negedge rst)
 begin
@@ -155,7 +173,6 @@ always @ (posedge clk_25 or negedge rst)
 begin
 	if (rst == 1'b0)
 	begin
-		disp_done <= 1'b0;
 		hcount <= 10'd0;
 		vcount <= 10'd0;
 		vga_hs <= 1'd1;
@@ -209,7 +226,6 @@ begin
 		case (vs)
 			VDISP:
 			begin
-				disp_done <= 1'b0;
 				vblank <= 1'd1;
 				vga_vs <= 1'd1;
 				if (vcount == VDISP_TIME)
@@ -217,15 +233,24 @@ begin
 			end
 			VFRONT:
 			begin
-				disp_done <= 1'b1;
+			
+				if (vcount == 10'b0)
+				begin
+					disp_done <= 1'b1;
+				end
+				else
+				begin
+					disp_done <= 1'b0;
+				end
+				
 				vblank <= 1'd0;
 				vga_vs <= 1'd1;
+				
 				if (vcount == VFRONT_TIME)
 					vcount <= 10'd0;
 			end
 			VSYNC:
 			begin
-				disp_done <= 1'b1;
 				vblank <= 1'd0;
 				vga_vs <= 1'd0;
 				if (vcount == VSYNC_TIME)
@@ -233,7 +258,6 @@ begin
 			end
 			VBACK:
 			begin
-				disp_done <= 1'b1;
 				vblank <= 1'd0;
 				vga_vs <= 1'd1;
 				if (vcount == VBACK_TIME)
