@@ -4,9 +4,19 @@ class Program
 {
     static void Main(string[] args)
     {
+        bool compile = false;
         foreach (string filePath in args)
         {
-            ReadBin(filePath);
+            if(filePath== "c") {
+                compile = true;
+                continue;
+            }
+
+            if(compile) {
+                ReadFromFile(filePath);
+            } else {
+                ReadBin(filePath);
+            }
         }
     }
 
