@@ -264,7 +264,11 @@ module RISC_V(
 							write_en <= mem_write_size;
 					end
 					vga_input_data <= rv2;
-					memory_write_data <= rv2;
+					case (mem_write_size)
+						2'b1: memory_write_data <= (rv2<<24);
+						2'b10: memory_write_data <= (rv2<<16);
+						default: memory_write_data <= rv2;
+					endcase
 					if(jump == 1'b1) begin
 						if(jal_or_jalr == 1'b1)
 							program_counter <= program_counter + immediate;
