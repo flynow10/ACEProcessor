@@ -90,10 +90,12 @@ module RISC_V(
 	parameter WORD_SIZE = 'd32;
 
 	// Clock
-	wire clk;
+	reg clk;
 	wire rst;
 
-	assign clk = CLOCK_50;
+	always @(*) begin
+		clk = KEY[0] ? ~KEY[1] : CLOCK_50;
+	end
 	assign rst = KEY[2];
 
 	// FSM Control
