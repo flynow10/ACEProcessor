@@ -22,7 +22,7 @@ typedef enum t_Piece
 {
   None,
   WhitePawn = 1,
-  WhtieBishop,
+  WhiteBishop,
   WhiteKnight,
   WhiteRook,
   WhiteQueen,

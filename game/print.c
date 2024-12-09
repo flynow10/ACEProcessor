@@ -1,6 +1,6 @@
 #include "print.h"
 
-void printChar(char c, int pos)
+void printCharPos(char c, int pos)
 {
   int asciiVal = (int)c;
   __asm__("lui t0, 0x10000;"
@@ -16,4 +16,22 @@ void printChar(char c, int pos)
           :
           : "r"(asciiVal), "r"(pos)
           :);
+}
+
+int currentPos = 0;
+
+void printChar(char c)
+{
+  printCharPos(c, currentPos);
+  currentPos++;
+}
+void newLine()
+{
+  currentPos -= (currentPos % 80);
+  currentPos += 80;
+}
+
+void reset()
+{
+  currentPos = 0;
 }
