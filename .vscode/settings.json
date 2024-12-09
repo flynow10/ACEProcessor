@@ -7,6 +7,7 @@
     "stdio.h": "c",
     "movegen.h": "c",
     "print.h": "c",
-    "chess.h": "c"
+    "chess.h": "c",
+    "utils.h": "c"
   }
 }

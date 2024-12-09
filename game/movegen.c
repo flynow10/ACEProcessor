@@ -12,7 +12,7 @@ void generateMoves(Board *board, MoveSet *moveset)
   for (int i = 0; i < 64; i++)
   {
     Piece piece = board->squares[i];
-    if (piece & 0xf == Pawn && piece & 0x10 == White)
+    if ((piece & 0xf) == Pawn && (piece & 0x10) == White)
     {
       Move move = createMove(i, i + 8);
       moveset->moves[moveset->moveCount++] = move;

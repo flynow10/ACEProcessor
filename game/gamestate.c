@@ -8,6 +8,7 @@ GameState *createState()
   initialState->enPassentFile = -1;
   initialState->fiftyMoveCounter = 0;
   initialState->lastCapture = None;
+  return initialState;
 }
 
 GameState *nextState(GameState *current)
@@ -24,5 +25,5 @@ void deleteStateStack(GameState *toDelete)
     free(toDelete);
     toDelete = next;
     next = nextState(toDelete);
-  } while (nextState);
+  } while (next);
 }

@@ -149,16 +149,17 @@ void undoMove(Board *board, Move move)
 
 void printBoard(Board *board)
 {
-  for (int i = 0; i < 8; i++)
+  for (int i = 7; i >= 0; i--)
   {
-    for (int j = 0; j < 8; j++)
+    for (int j = 7; j >= 0; j--)
     {
       printChar('+');
       printChar('-');
     }
     printChar('+');
+    newLine();
 
-    for (int j = 0; j < 8; j++)
+    for (int j = 7; j >= 0; j--)
     {
       printChar('|');
       printPiece(board->squares[(i * 8) + j]);
@@ -167,7 +168,7 @@ void printBoard(Board *board)
     newLine();
   }
 
-  for (int j = 0; j < 8; j++)
+  for (int j = 7; j >= 0; j--)
   {
     printChar('+');
     printChar('-');
