@@ -250,10 +250,10 @@ module RISC_V(
 				end
 				UPDATE: begin
 					case (reg_load_size)
-						3'b100: register_write_back <= {{24{1'b0}}, raw_reg_write_back[7:0]};
-						3'b101:	register_write_back <= {{16{1'b0}}, raw_reg_write_back[15:0]};
-						3'b000: register_write_back <= {{24{raw_reg_write_back[7]}}, raw_reg_write_back[7:0]};
-						3'b001:	register_write_back <= {{16{raw_reg_write_back[15]}}, raw_reg_write_back[15:0]};
+						3'b100: register_write_back <= {{24{1'b0}}, raw_reg_write_back[31:24]};
+						3'b101:	register_write_back <= {{16{1'b0}}, raw_reg_write_back[31:16]};
+						3'b000: register_write_back <= {{24{raw_reg_write_back[31]}}, raw_reg_write_back[31:24]};
+						3'b001:	register_write_back <= {{16{raw_reg_write_back[31]}}, raw_reg_write_back[31:16]};
 						default: register_write_back <= raw_reg_write_back;
 					endcase
 					enable_register <= 1'b1;
