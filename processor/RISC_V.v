@@ -164,6 +164,11 @@ module RISC_V(
 
 	// Mem write back
 	reg [WORD_SIZE-1:0] register_write_back;
+	
+	//vga controller
+	reg vga_write_en;
+	reg [WORD_SIZE-1:0]vga_input_data;
+	reg [12:0]vga_write_address;
 
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
@@ -358,4 +363,20 @@ module RISC_V(
 		.seg7_dig4(HEX4),
 		.seg7_dig5(HEX5)
 	);
+	
+	ascii_master_controller controller (
+		.clk(clk),
+		.rst(rst),
+		.ascii_write_en(vga_write_en),
+		.ascii_input(vga_input_data),
+		.ascii_write_address(vga_write_address),
+		.vga_blank(VGA_BLANK_N),
+		.vga_b(VGA_B),
+		.vga_r(VGA_R),
+		.vga_g(VGA_G),
+		.vga_clk(VGA_CLK),
+		.vga_hs(VGA_HS),
+		.vga_vs(VGA_VS),
+		.vga_sync(VGA_SYNC_N)
+);
 endmodule
