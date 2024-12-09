@@ -242,10 +242,10 @@ module RISC_V(
 				EXECUTE: begin
 					alu_input_a <= rs1_use_pc == 1'b0 ? rv1 : program_counter;
 					alu_input_b <= rs2_use_imm == 1'b0 ? rv2 : immediate;
-					need_write_mem <= mem_write_size != 2'b0;
 				end
 				MEM_ACCESS: begin
 					memory_address <= alu_output;
+					need_write_mem <= mem_write_size != 2'b0 && alu_output < 32'h00070000;
 					vga_write_address <= alu_output[12:0];
 				end
 				UPDATE: begin
@@ -259,9 +259,9 @@ module RISC_V(
 					enable_register <= 1'b1;
 					if(mem_write_size != 2'b0) begin
 						if(memory_address >= 32'h00070000)
-							write_en <= mem_write_size;
-						else
 							vga_write_en <= 1'b1;
+						else
+							write_en <= mem_write_size;
 					end
 					vga_input_data <= rv2;
 					memory_write_data <= rv2;
@@ -360,7 +360,7 @@ module RISC_V(
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
 			3'b110: to_display = program_counter;
-			3'b111: to_display = raw_reg_write_back;
+			3'b111: to_display = vga_write_address;
 			default: to_display = 32'b0;
 		endcase
 	end
@@ -376,7 +376,7 @@ module RISC_V(
 	);
 	
 	ascii_master_controller controller (
-		.clk(clk),
+		.clk(CLOCK_50),
 		.rst(rst),
 		.ascii_write_en(vga_write_en),
 		.ascii_input(vga_input_data),
@@ -389,5 +389,5 @@ module RISC_V(
 		.vga_hs(VGA_HS),
 		.vga_vs(VGA_VS),
 		.vga_sync(VGA_SYNC_N)
-);
+	);
 endmodule
