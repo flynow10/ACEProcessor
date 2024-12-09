@@ -20,7 +20,7 @@ main:
 	lw	ra,12(sp)
 	lw	s0,8(sp)
 	addi	sp,sp,16
-	hlt
+	jr	ra
 print:
 	addi	sp,sp,-48
 	sw	ra,44(sp)
@@ -39,7 +39,9 @@ print:
 	lui t2, 0x00fff
 	slli t1, t1, 24
 	add t1, t1, t2
-	addi t1,t1, 0xfff
+	addi t1,t1, 0x7ff
+	addi t1,t1, 0x7ff
+	addi t1,t1, 1
 	sw t1, 0(t0)
 	nop
 	lw	ra,44(sp)

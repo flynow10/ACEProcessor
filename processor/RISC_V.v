@@ -93,7 +93,7 @@ module RISC_V(
 	wire clk;
 	wire rst;
 
-	assign clk = CLOCK_50;
+	assign clk = ~KEY[1];
 	assign rst = KEY[2];
 
 	// FSM Control
