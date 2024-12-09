@@ -20,6 +20,6 @@ void print(char c, int pos)
           "addi t1,t1, 0xfff;"
           "sw t1, 0(t0);"
           :
-          : "r"(asciiVal) "r"(pos)
+          : "r"(asciiVal), "r"(pos)
           :);
 }
