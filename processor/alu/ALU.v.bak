@@ -40,10 +40,17 @@ module ALU #(
       end
       OP_SR: begin
         if(invert_b)
+<<<<<<< HEAD
+          out = a >>> b
+        else
+          out = a >> b
+      end ;
+=======
           out = a >>> b;
         else
           out = a >> b;
       end
+>>>>>>> 1e1e6b8dcf529777bf09dfdb1c1818264bf7cf52
       OP_SLL: out = a << b;
       OP_SLT: out = a_signed < b_signed;
       OP_SLTU: out = a < b;
