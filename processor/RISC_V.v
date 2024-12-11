@@ -209,7 +209,7 @@ module RISC_V(
 					NS = FETCH;
 			WAIT_UPDATE: begin
 				if (mem_overflow_error == 1'b1)
-					S <= MEM_ERROR;
+					NS = MEM_ERROR;
 				else if(mem_update_complete == 1'b1)
 					NS = FETCH;
 				else
