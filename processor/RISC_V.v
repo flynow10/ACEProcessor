@@ -127,10 +127,14 @@ module RISC_V(
 	// Memory Control
 	wire mem_update_complete;
 	wire mem_align_error;
-	wire [WORD_SIZE-1:0] memory_output;
+	wire [WORD_SIZE-1:0] memory_word_output;
+	wire [7:0] memory_byte_output;
+	wire [15:0] memory_half_word_output;
 	reg need_write_mem;
 	reg [31:0] memory_address;
-	reg [31:0] memory_write_data;
+	reg [7:0] write_byte;
+  reg [15:0] write_half_word;
+  reg [31:0] write_word;
 	reg [1:0] write_en;
 
 	// Fetch / Decode
@@ -239,7 +243,7 @@ module RISC_V(
 					vga_write_en <= 1'b0;
 				end
 				DECODE: begin
-					instruction <= memory_output;
+					instruction <= memory_word_output;
 				end
 				EXECUTE: begin
 					alu_input_a <= rs1_use_pc == 1'b0 ? rv1 : program_counter;
@@ -251,13 +255,7 @@ module RISC_V(
 					vga_write_address <= alu_output[12:0];
 				end
 				UPDATE: begin
-					case (reg_load_size)
-						3'b100: register_write_back <= {{24{1'b0}}, raw_reg_write_back[31:24]};
-						3'b101:	register_write_back <= {{16{1'b0}}, raw_reg_write_back[31:16]};
-						3'b000: register_write_back <= {{24{raw_reg_write_back[31]}}, raw_reg_write_back[31:24]};
-						3'b001:	register_write_back <= {{16{raw_reg_write_back[31]}}, raw_reg_write_back[31:16]};
-						default: register_write_back <= raw_reg_write_back;
-					endcase
+					register_write_back <= raw_reg_write_back
 					enable_register <= 1'b1;
 					if(mem_write_size != 2'b0) begin
 						if(memory_address >= 32'h00070000)
@@ -266,11 +264,9 @@ module RISC_V(
 							write_en <= mem_write_size;
 					end
 					vga_input_data <= rv2;
-					case (mem_write_size)
-						2'b1: memory_write_data <= (rv2<<24);
-						2'b10: memory_write_data <= (rv2<<16);
-						default: memory_write_data <= rv2;
-					endcase
+					write_byte <= rv2[7:0];
+					write_half_word <= rv2[15:0];
+					write_word <= rv2;
 					if(jump == 1'b1) begin
 						if(jal_or_jalr == 1'b1)
 							program_counter <= program_counter + immediate;
@@ -289,7 +285,13 @@ module RISC_V(
 		if(jump == 1'b1)
 			raw_reg_write_back = program_counter + 32'd4;
 		else if(mem_to_reg == 1'b1)
-			raw_reg_write_back = memory_output;
+			case (reg_load_size)
+				3'b000: raw_reg_write_back = {{24{memory_byte_output[7]}}, memory_byte_output};
+				3'b001: raw_reg_write_back = {{16{memory_half_word_output[15]}}, memory_half_word_output};
+				3'b100: raw_reg_write_back = {{24{1'b0}}, memory_byte_output};
+				3'b001: raw_reg_write_back = {{16{1'b0}}, memory_half_word_output};
+				default: raw_reg_write_back = memory_word_output;
+			endcase
 		else
 			raw_reg_write_back = alu_output;
 	end
@@ -346,15 +348,13 @@ module RISC_V(
 		.clk(clk),
 		.error(mem_align_error),
 		.done(mem_update_complete),
-		.write(write_en),
-		.d3(memory_write_data[7:0]),
-		.d2(memory_write_data[15:8]),
-		.d1(memory_write_data[23:16]),
-		.d0(memory_write_data[31:24]),
-		.q3(memory_output[7:0]),
-		.q2(memory_output[15:8]),
-		.q1(memory_output[23:16]),
-		.q0(memory_output[31:24])
+		.write_mode(write_en),
+		.write_byte(write_byte),
+		.write_half_word(write_half_word),
+		.write_word(write_word),
+		.byte_output(memory_byte_output),
+		.half_word_output(memory_half_word_output),
+		.word_output(memory_word_output)
 	);
 
 	always @(*) begin
@@ -362,7 +362,7 @@ module RISC_V(
 			3'b000: to_display = alu_output;
 			3'b001: to_display = instruction;
 			3'b010: to_display = debug_reg_out;
-			3'b011: to_display = memory_output;
+			3'b011: to_display = memory_word_output;
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
 			3'b110: to_display = program_counter;

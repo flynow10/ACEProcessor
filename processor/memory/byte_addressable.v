@@ -1,20 +1,16 @@
 module byte_addressable (
   input clk,
   input [31:0] address,
-  input [1:0] write, // 0 = don't write, 1 = write byte, 2 = write half word, 3 = write word
-  input [7:0] d0,
-  input [7:0] d1,
-  input [7:0] d2,
-  input [7:0] d3,
+  input [1:0] write_mode, // 0 = don't write, 1 = write byte, 2 = write half word, 3 = write word
+  input [7:0] write_byte,
+  input [15:0] write_half_word,
+  input [31:0] write_word,
   output reg error,
   output reg done,
-  output reg [7:0] q0,
-  output reg [7:0] q1,
-  output reg [7:0] q2,
-  output reg [7:0] q3
+  output [7:0] byte_output,
+  output reg [15:0] half_word_output,
+  output [31:0] word_output,
 );
-
-wire [31:0] memory_output;
 
 parameter START = 2'b0,
           READ = 2'b1,
@@ -33,36 +29,27 @@ always @(posedge clk) begin
 end
 
 always @(*) begin
-  error = (address[1:0] != 2'b0);
-  q3 = memory_output[7:0];
-  q2 = memory_output[15:8];
-  q1 = memory_output[23:16];
-  q0 = memory_output[31:24];
-  
-  // case (address[1:0])
-  //   2'b00: q0 = memory_output[31:24];
-  //   2'b01: q0 = memory_output[23:16];
-  //   2'b10: q0 = memory_output[15:8];
-  //   2'b11: q0 = memory_output[7:0];
-  // endcase
-
-  if(write == 2'b0)
-    compiled_data = {q0, q1, q2, q3};
-  else if(write == 2'b1)
-    compiled_data = {d0, q1, q2, q3};
-  else if(write == 2'b10)
-    compiled_data = {d0, d1, q2, q3};
-  else if(write == 2'b11)
-    compiled_data = {d0, d1, d2, d3};
-  else
-    compiled_data = 32'd0;
+  if(address[1] == 1'b0)
+      half_word_output = word_output[31:16];
+    else
+      compiled_data = word_output[15:0];
+  if(write_mode == 2'b10) begin
+    if(address[1] == 1'b0)
+      compiled_data = {write_half_word, word_output[15:0]};
+    else
+      compiled_data = {word_output[31:16], write_half_word};
+  end else
+    compiled_data = write_word;
   
   case (S)
     START: begin
       if(write == 2'b0)
         NS = START;
       else
-        NS = READ;
+        if(write_mode == 2'b10)
+          NS = READ;
+        else
+          NS = WRITE;
     end
     READ: begin
       if(cycled[0] == 1'b0)
@@ -105,10 +92,14 @@ always @(posedge clk) begin
 end
 
 processor_memory memory_block(
-  .address(address[17:2]),
+  .address_a(address[17:2]),
+  .address_b(address[17:0]),
   .clock(clk),
-  .data(compiled_data),
-  .wren(write_en),
-  .q(memory_output)
+  .data_a(compiled_data),
+  .data_b(write_byte),
+  .wren_a(write_en & (write_mode == 2'b10 | write_mode == 2'b11)),
+  .wren_b(write_en & (write_mode == 2'b01)),
+  .q_a(word_output),
+  .q_b(byte_output)
 );
 endmodule
