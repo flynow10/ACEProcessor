@@ -12,7 +12,7 @@ AUD_XCK << <GND>
 CLOCK2_50 => ~NO_FANOUT~
 CLOCK3_50 => ~NO_FANOUT~
 CLOCK4_50 => ~NO_FANOUT~
-CLOCK_50 => clk.IN3
+CLOCK_50 => CLOCK_50.IN1
 DRAM_ADDR[0] << <GND>
 DRAM_ADDR[1] << <GND>
 DRAM_ADDR[2] << <GND>
@@ -98,8 +98,8 @@ HEX5[5] << six_hex_vals:seven_seg_display.seg7_dig5
 HEX5[6] << six_hex_vals:seven_seg_display.seg7_dig5
 IRDA_RXD => ~NO_FANOUT~
 IRDA_TXD << <GND>
-KEY[0] => ~NO_FANOUT~
-KEY[1] => ~NO_FANOUT~
+KEY[0] => clk.OUTPUTSELECT
+KEY[1] => clk.DATAB
 KEY[2] => rst.IN2
 KEY[3] => NS.START.DATAB
 KEY[3] => Selector0.IN1
