@@ -1,7 +1,6 @@
 __heap_size     = 0x800;    /* required amount of heap  */
 __stack_size    = 0x800;    /* required amount of stack */
 __global_pointer$ = 0x0001F000;
-_end = 0x00040000;
 
 MEMORY
 {
@@ -28,6 +27,7 @@ SECTIONS
         *(.bss)
         *(.rela*)
         *(COMMON)
+        _end = .;
     } > RAM
 
     .heap :
