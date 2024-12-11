@@ -7,9 +7,9 @@ module byte_addressable (
   input [31:0] write_word,
   output reg error,
   output reg done,
-  output [7:0] byte_output,
+  output wire [7:0] byte_output,
   output reg [15:0] half_word_output,
-  output [31:0] word_output,
+  output wire [31:0] word_output
 );
 
 parameter START = 2'b0,
@@ -29,10 +29,11 @@ always @(posedge clk) begin
 end
 
 always @(*) begin
+  error = 1'b0;
   if(address[1] == 1'b0)
       half_word_output = word_output[31:16];
     else
-      compiled_data = word_output[15:0];
+      half_word_output = word_output[15:0];
   if(write_mode == 2'b10) begin
     if(address[1] == 1'b0)
       compiled_data = {write_half_word, word_output[15:0]};
@@ -43,7 +44,7 @@ always @(*) begin
   
   case (S)
     START: begin
-      if(write == 2'b0)
+      if(write_mode == 2'b0)
         NS = START;
       else
         if(write_mode == 2'b10)
@@ -64,7 +65,7 @@ always @(*) begin
         NS = DONE;
     end
     DONE: begin
-      if(write == 2'b0)
+      if(write_mode == 2'b0)
         NS = START;
       else
         NS = DONE;

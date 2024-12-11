@@ -227,7 +227,9 @@ module RISC_V(
 			memory_address <= 32'b0;
 			instruction <= 32'b0;
 			need_write_mem <= 1'b0;
-			memory_write_data <= 32'd0;
+			write_byte <= 8'd0;
+			write_half_word <= 16'd0;
+			write_word <= 32'd0;
 			program_counter <= 32'd0;
 			enable_register <= 1'b0;
 			vga_write_address <= 13'd0;
@@ -255,7 +257,7 @@ module RISC_V(
 					vga_write_address <= alu_output[12:0];
 				end
 				UPDATE: begin
-					register_write_back <= raw_reg_write_back
+					register_write_back <= raw_reg_write_back;
 					enable_register <= 1'b1;
 					if(mem_write_size != 2'b0) begin
 						if(memory_address >= 32'h00070000)
@@ -289,7 +291,7 @@ module RISC_V(
 				3'b000: raw_reg_write_back = {{24{memory_byte_output[7]}}, memory_byte_output};
 				3'b001: raw_reg_write_back = {{16{memory_half_word_output[15]}}, memory_half_word_output};
 				3'b100: raw_reg_write_back = {{24{1'b0}}, memory_byte_output};
-				3'b001: raw_reg_write_back = {{16{1'b0}}, memory_half_word_output};
+				3'b101: raw_reg_write_back = {{16{1'b0}}, memory_half_word_output};
 				default: raw_reg_write_back = memory_word_output;
 			endcase
 		else
