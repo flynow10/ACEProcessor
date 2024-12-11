@@ -1,5 +1,5 @@
 CC = riscv64-unknown-elf-gcc
-CFLAGS = -march=rv32i -mabi=ilp32
+CFLAGS = -march=rv32i -mabi=ilp32 -ffreestanding
 objects = chess.o board.o gamestate.o move.o movegen.o utils.o print.o
 chess_rv.mif: build $(objects)
 	cd build; $(CC) $(CFLAGS) -T ../riscv.ld -o chess $(objects)

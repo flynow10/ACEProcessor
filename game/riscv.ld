@@ -2,8 +2,8 @@ ENTRY(_start)
 
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x20000
-    RAM   (rw) : ORIGIN = 0x00020000, LENGTH = 0x20000
+    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x10000
+    RAM   (rw) : ORIGIN = 0x00010000, LENGTH = 0x10000
 }
 
 SECTIONS
@@ -21,7 +21,7 @@ SECTIONS
     {
         *(.data*)
         PROVIDE(__global_pointer$ = . + 0x800);
-    } > RAM AT > FLASH
+    } > RAM
 
     .bss :
     {
