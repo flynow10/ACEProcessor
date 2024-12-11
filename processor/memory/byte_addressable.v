@@ -98,7 +98,7 @@ processor_memory memory_block(
   .clock(clk),
   .data_a(compiled_data),
   .data_b(write_byte),
-  .wren_a(write_en & (write_mode == 2'b10 | write_mode == 2'b11)),
+  .wren_a(write_en & ((write_mode == 2'b10) | (write_mode == 2'b11))),
   .wren_b(write_en & (write_mode == 2'b01)),
   .q_a(word_output),
   .q_b(byte_output)
