@@ -1,16 +1,15 @@
-__heap_size     = 0x200;    /* required amount of heap  */
+__heap_size     = 0x800;    /* required amount of heap  */
 __stack_size    = 0x800;    /* required amount of stack */
-__global_pointer$ = 0x0001A000;
-__bss_start = 0x0001C000;
+__global_pointer$ = 0x0001F000;
 _end = 0x00040000;
 
 MEMORY
 {
     ROM         (rwx) : ORIGIN = 0x00000000, LENGTH = 0x0F000
     RAM         (rwx) : ORIGIN = 0x0000F000, LENGTH = 0x0F000
-    RESERVED    (rwx) : ORIGIN = 0x00018000, LENGTH = 0x18000
+    RESERVED    (rwx) : ORIGIN = 0x0001E000, LENGTH = 0x0F000
     EXCEPTION   (rwx) : ORIGIN = 0x00030000, LENGTH = 0x00400
-    IO          (rw)  : ORIGIN = 0x00030400, LENGTH = 0x00010
+    IO          (rw)  : ORIGIN = 0x10030400, LENGTH = 0x10000
 }
 SECTIONS
 {
@@ -25,6 +24,7 @@ SECTIONS
     {
         *(.sbss)
         *(.data)
+        __bss_start = .;
         *(.bss)
         *(.rela*)
         *(COMMON)
