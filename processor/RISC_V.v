@@ -117,7 +117,7 @@ module RISC_V(
 	reg [3:0] NS;
 
 	assign LEDR[3:0] = S;
-	assign LEDR[4] = mem_align_error;
+	assign LEDR[4] = mem_overflow_error;
 	assign LEDR[9:5] = SW[9:5];
 
 	// Display
@@ -126,7 +126,7 @@ module RISC_V(
 	
 	// Memory Control
 	wire mem_update_complete;
-	wire mem_align_error;
+	wire mem_overflow_error;
 	wire [WORD_SIZE-1:0] memory_word_output;
 	wire [7:0] memory_byte_output;
 	wire [15:0] memory_half_word_output;
@@ -179,6 +179,8 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
+		else if (mem_overflow_error == 1'b0)
+			S <= MEM_ERROR;
 		else
 			S <= NS;
 	end
@@ -214,6 +216,8 @@ module RISC_V(
 					NS = WAIT_UPDATE;
 			end
 			DONE: NS = DONE;
+			DECODE_ERROR: NS = DECODE_ERROR;
+			MEM_ERROR: NS = MEM_ERROR;
 			default: NS = FSM_ERROR;
 		endcase
 	end
@@ -253,14 +257,14 @@ module RISC_V(
 				end
 				MEM_ACCESS: begin
 					memory_address <= alu_output;
-					need_write_mem <= mem_write_size != 2'b0 && alu_output < 32'h00070000;
+					need_write_mem <= mem_write_size != 2'b0 && alu_output < 32'h00020000;
 					vga_write_address <= alu_output[12:0];
 				end
 				UPDATE: begin
 					register_write_back <= raw_reg_write_back;
 					enable_register <= 1'b1;
 					if(mem_write_size != 2'b0) begin
-						if(memory_address >= 32'h00070000)
+						if(memory_address >= 32'h00020000)
 							vga_write_en <= 1'b1;
 						else
 							write_en <= mem_write_size;
@@ -348,7 +352,7 @@ module RISC_V(
 	byte_addressable memory(
 		.address(memory_address),
 		.clk(clk),
-		.error(mem_align_error),
+		.error(mem_overflow_error),
 		.done(mem_update_complete),
 		.write_mode(write_en),
 		.write_byte(write_byte),

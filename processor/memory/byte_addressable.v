@@ -29,7 +29,6 @@ always @(posedge clk) begin
 end
 
 always @(*) begin
-  error = 1'b0;
   if(address[1] == 1'b0)
       half_word_output = word_output[31:16];
     else
@@ -79,9 +78,12 @@ always @(posedge clk) begin
       cycled <= 2'b0;
       done <= 1'b0;
       write_en <= 1'b0;
+      error <= 1'b0;
     end
     READ: cycled[0] <= 1'b1;
     WRITE: begin
+      if(address >= 32'h00020000)
+        error <= 1'b1;
       write_en <= 1'b1;
       cycled[1] <= 1'b1;
     end 
