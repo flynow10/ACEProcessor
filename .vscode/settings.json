@@ -8,6 +8,7 @@
     "movegen.h": "c",
     "print.h": "c",
     "chess.h": "c",
-    "utils.h": "c"
+    "utils.h": "c",
+    "gamestate.h": "c"
   }
 }
