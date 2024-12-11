@@ -1,9 +1,10 @@
-#include <stdlib.h>
 #include "gamestate.h"
+
+// #include <stdlib.h>
 
 GameState *createState()
 {
-  GameState *initialState = malloc(sizeof(GameState));
+  GameState *initialState; // = malloc(sizeof(GameState));
   initialState->castleRights = 0;
   initialState->enPassentFile = -1;
   initialState->fiftyMoveCounter = 0;
@@ -22,7 +23,7 @@ void deleteStateStack(GameState *toDelete)
 
   do
   {
-    free(toDelete);
+    // free(toDelete);
     toDelete = next;
     next = nextState(toDelete);
   } while (next);
