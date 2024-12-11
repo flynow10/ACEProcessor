@@ -114,11 +114,11 @@ always @(*) begin
       jump = 1'b1;
       immediate = sign_extended_imm_jal_offset;
       jal_or_jalr = 1'b1;
+    end
     ECALL: begin
       rd = 5'b0;
       rs1 = 5'b0;
       rs2 = 5'b0;
-    end
     end
     default: begin
       decode_error = 1'b1;
