@@ -79,7 +79,7 @@ module RISC_V(
 	output		          		VGA_HS,
 	output		     [7:0]		VGA_R,
 	output		          		VGA_SYNC_N,
-	output		          		VGA_VS,
+	output		          		VGA_VS
 
 	//////////// GPIO_0, GPIO_0 connect to GPIO Default //////////
 	// inout 		    [35:0]		GPIO_0,
