@@ -179,8 +179,6 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if (mem_overflow_error == 1'b0)
-			S <= MEM_ERROR;
 		else
 			S <= NS;
 	end
@@ -210,7 +208,9 @@ module RISC_V(
 				else
 					NS = FETCH;
 			WAIT_UPDATE: begin
-				if(mem_update_complete == 1'b1)
+				if (mem_overflow_error == 1'b1)
+					S <= MEM_ERROR;
+				else if(mem_update_complete == 1'b1)
 					NS = FETCH;
 				else
 					NS = WAIT_UPDATE;

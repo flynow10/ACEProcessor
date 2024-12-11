@@ -3,7 +3,7 @@ ENTRY(_start)
 MEMORY
 {
     FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x20000
-    RAM   (rw) : ORIGIN = 0x20000000, LENGTH = 0x20000
+    RAM   (rw) : ORIGIN = 0x00020000, LENGTH = 0x20000
 }
 
 SECTIONS
@@ -33,7 +33,7 @@ SECTIONS
 
     .stack :
     {
-        . = ALIGN(8);
+        . = ALIGN(4);
         _stack_start = .;
         . = . + 0x1000;
         _stack_end = .;
