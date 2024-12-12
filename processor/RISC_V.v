@@ -186,7 +186,7 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(instruction[6:0] != 7'b0100011 || KEY[0])
+		else if(program_counter != 32'h1020 || KEY[0])
 			S <= NS;
 	end
 
