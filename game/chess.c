@@ -9,18 +9,19 @@ int perft(Board *board, int depth);
 
 int main()
 {
-  Board *board = createBoard();
-  MoveSet moveSet;
-  for (int i = 0; i < 20; i++)
-  {
-    generateMoves(board, &moveSet);
-
-    makeMove(board, moveSet.moves[2]);
-  }
-  printBoard(board);
-  // printf("%d", perft(board, 4));
+  int color = 0;
   while (1)
   {
+    reset();
+    for (int i = 33; i < 127; i++)
+    {
+      printColorChar((char)(i), color);
+      color++;
+      if (color >= 0xffffff)
+      {
+        color = 0;
+      }
+    }
   }
   return 0;
 }
