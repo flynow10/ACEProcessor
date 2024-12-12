@@ -165,8 +165,10 @@ module RISC_V(
 	reg [WORD_SIZE-1:0] alu_input_b;
 	wire [WORD_SIZE-1:0] alu_output;
 	reg enable_register;
-	reg [WORD_SIZE-1:0] raw_reg_write_back;
 	wire branch_taken;
+
+	// Mem write back
+	reg [WORD_SIZE-1:0] register_write_back;
 	
 	// VGA controller
 	reg vga_write_en;
