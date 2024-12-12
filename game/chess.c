@@ -4,16 +4,14 @@
 #include "board.h"
 #include "utils.h"
 #include "print.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
 
 int perft(Board *board, int depth);
 
 int main()
 {
   Board *board = createBoard();
-
+  makeMove(board, createMove(rowColToSquare(1, 3), rowColToSquare(3, 3)));
+  printBoard(board);
   // printf("%d", perft(board, 4));
 
   return board->squares[rowColToSquare(3, 4)];
@@ -23,9 +21,9 @@ int perft(Board *board, int depth)
 {
   MoveSet moveSet;
   generateMoves(board, &moveSet);
-  if (depth == 0)
+  if (depth == 1)
   {
-    return 1;
+    return moveSet.moveCount;
   }
 
   int sum = 0;
