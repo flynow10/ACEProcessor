@@ -94,28 +94,35 @@ module RISC_V(
 	wire rst;
 
 	always @(*) begin
-		clk = KEY[0] ? ~KEY[1] : CLOCK_50;
+		clk = (KEY[0] & S != GET_REG & S != WAIT_REG & S != DISP_REG & S != DISP_BYTE & S != WAIT_BYTE & S != INCREMENT_DISPLAY & S != INCREMENT_BYTE) ? ~KEY[1] : CLOCK_50;
 	end
 	assign rst = KEY[2];
 
 	// FSM Control
-	parameter START = 4'b0,
-						FETCH = 4'b1,
-						WAIT_FETCH = 4'b10,
-						DECODE = 4'b11,
-						EXECUTE = 4'b100,
-						MEM_ACCESS = 4'b101,
-						WAIT_MEM_ACCESS = 4'b110,
-						UPDATE = 4'b111,
-						WAIT_UPDATE = 4'b1000,
-						DONE = 4'b1001, // Debug for halt function
-						WAIT_PRINT = 4'b1010,
-						DECODE_ERROR = 4'b1110,
-						MEM_ERROR = 4'b1101,
-						FSM_ERROR = 4'b1111;
+	parameter START = 5'b0,
+						FETCH = 5'b1,
+						WAIT_FETCH = 5'b10,
+						DECODE = 5'b11,
+						EXECUTE = 5'b100,
+						MEM_ACCESS = 5'b101,
+						WAIT_MEM_ACCESS = 5'b110,
+						UPDATE = 5'b111,
+						WAIT_UPDATE = 5'b1000,
+						DONE = 5'b1001, // Debug for halt function
+						GET_REG = 5'b1011,
+						WAIT_REG = 5'b1100,
+						DISP_REG = 5'b1101,
+						DISP_BYTE = 5'b1110,
+						WAIT_BYTE = 5'b1111,
+						PRINT_DONE = 5'b10000,
+						INCREMENT_DISPLAY = 5'b10001,
+						INCREMENT_BYTE = 5'b10010,
+						DECODE_ERROR = 5'b11110,
+						MEM_ERROR = 5'b11101,
+						FSM_ERROR = 5'b11111;
 
-	reg [3:0] S;
-	reg [3:0] NS;
+	reg [4:0] S;
+	reg [4:0] NS;
 
 	assign LEDR[3:0] = S;
 	assign LEDR[4] = mem_overflow_error;
@@ -189,14 +196,15 @@ module RISC_V(
 				NS = FETCH;
 			else
 				NS = START;
-			FETCH: NS = WAIT_PRINT;
-			WAIT_PRINT:
-			begin
-				if (print_done == 1'b1)
-					NS = WAIT_FETCH;
-				else
-					NS = WAIT_PRINT;
-			end
+			FETCH: NS = GET_REG;
+			GET_REG: NS = WAIT_REG;
+			WAIT_REG: NS = DISP_REG;
+			DISP_REG: NS = (disp_count == 6'd32)?(PRINT_DONE):(DISP_BYTE);
+			DISP_BYTE: NS = INCREMENT_BYTE;
+			INCREMENT_BYTE: NS = (byte_count == 4'd7)?(INCREMENT_DISPLAY):(WAIT_BYTE);
+			WAIT_BYTE: NS = DISP_BYTE;
+			INCREMENT_DISPLAY: NS = GET_REG;
+			PRINT_DONE: NS = WAIT_FETCH;
 			WAIT_FETCH: NS = DECODE;
 			DECODE: NS = EXECUTE;
 			EXECUTE: begin
@@ -255,6 +263,31 @@ module RISC_V(
 					write_en <= 2'b0;
 					vga_write_en <= 1'b0;
 				end
+				GET_REG: 
+				begin
+					debug_address <= disp_count;
+					vga_write_en <= 1'b1;
+				end
+				DISP_REG: 
+				begin
+					byte_count <= 3'b0;
+				end
+				DISP_BYTE: 
+				begin
+					vga_write_address <= (disp_count * 13'd80) + byte_count;
+					current_byte <= (debug_reg_out >> ((4'd7 - byte_count) * 8'd4)) & 4'b1111;
+				end
+				INCREMENT_BYTE: begin
+					vga_input_data <= {encoded_byte, 24'b111111111111111111111111};
+				end
+				WAIT_BYTE: byte_count <= byte_count + 3'b1; 
+				INCREMENT_DISPLAY: disp_count <= disp_count + 5'b1;
+				PRINT_DONE: 
+				begin
+					vga_write_en <= 1'b0;
+					disp_count <= 6'b0;
+					byte_count <= 3'b0;
+				end
 				DECODE: begin
 					instruction <= memory_word_output;
 				end
@@ -307,72 +340,10 @@ module RISC_V(
 	/*-------------BEGIN PRINT DEBUG FSM-------------*/
 
 	reg [4:0]debug_address;
-	reg [4:0]disp_count;
-	reg print_done;
-	reg [2:0]byte_count, print_done_count;
+	reg [5:0]disp_count;
+	reg [2:0]byte_count;
 	reg [7:0]encoded_byte;
-
-	reg [3:0]PS, PNS;
-
-	parameter WAIT_START = 4'd0,
-			GET_REG = 4'd1,
-			WAIT_REG = 4'd2,
-			DISP_REG = 4'd3,
-			DISP_BYTE = 4'd4,
-			WAIT_BYTE = 4'd5,
-			PRINT_DONE = 4'd6;
-
-	always @ (posedge clk or negedge rst)
-	begin
-		if (rst == 1'b0)
-			PS <= WAIT_START;
-		else
-			PS <= PNS;
-	end
-
-	always @ (*)
-	begin
-		WAIT_START: NS = (S == WAIT_PRINT)?(GET_REG):(WAIT_START);
-		GET_REG: NS = WAIT_REG;
-		WAIT_REG: NS = DISP_REG;
-		DISP_REG: NS = (disp_count == 5'd31)?(PRINT_DONE):(DISP_BYTE);
-		DISP_BYTE: NS = (byte_count == 3'd7)?(GET_REG):(WAIT_BYTE);
-		WAIT_BYTE: NS = DISP_BYTE;
-		PRINT_DONE: NS = (print_done_count == 3'd7)?(WAIT_START):(PRINT_DONE);
-	end
-
-	always @ (posedge clk or negedge rst)
-	begin
-		WAIT_START:
-		begin
-			print_done <= 1'b0;
-			disp_count <= 5'b0;
-			byte_count <= 3'b0;
-		end
-		GET_REG: 
-		begin
-			debug_address <= disp_count;
-			vga_write_en <= 1'b1;
-		end
-		DISP_REG: 
-		begin
-			byte_count <= 3'b0;
-			disp_count <= disp_count + 5'b1;
-		end
-		DISP_BYTE: 
-		begin
-			vga_write_address <= (disp_count * 13'd80) + byte_count;
-			current_byte <= debug_reg_out >> (3'd7 - byte_count);
-			vga_input_data <= {encoded_byte, 24'b111111111111111111111111};
-		end
-		WAIT_BYTE: byte_count <= byte_count + 3'b1;
-		PRINT_DONE: 
-		begin
-			print_done <= 1'b1;
-			vga_write_en <= 1'b0;
-			print_done_count <= print_done_count + 3'b1;
-		end
-	end
+	reg [3:0]current_byte;
 
 	always @ (*)
 	begin
