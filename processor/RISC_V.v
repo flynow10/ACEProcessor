@@ -117,6 +117,7 @@ module RISC_V(
 						PRINT_DONE = 5'b10000,
 						INCREMENT_DISPLAY = 5'b10001,
 						INCREMENT_BYTE = 5'b10010,
+						CLEANUP_UPDATE = 5'b10011,
 						DECODE_ERROR = 5'b11110,
 						MEM_ERROR = 5'b11101,
 						FSM_ERROR = 5'b11111;
@@ -221,15 +222,16 @@ module RISC_V(
 				if(need_write_mem == 1'b1)
 					NS = WAIT_UPDATE;
 				else
-					NS = FETCH;
+					NS = CLEANUP_UPDATE;
 			WAIT_UPDATE: begin
 				if (mem_overflow_error == 1'b1)
 					NS = MEM_ERROR;
 				else if(mem_update_complete == 1'b1)
-					NS = FETCH;
+					NS = CLEANUP_UPDATE;
 				else
 					NS = WAIT_UPDATE;
 			end
+			CLEANUP_UPDATE: NS = FETCH
 			DONE: NS = DONE;
 			DECODE_ERROR: NS = DECODE_ERROR;
 			MEM_ERROR: NS = MEM_ERROR;
@@ -258,10 +260,7 @@ module RISC_V(
 			case (S)
 				FETCH: begin
 					need_write_mem <= 1'b0;
-					enable_register <= 1'b0;
 					memory_address <= program_counter;
-					write_en <= 2'b0;
-					vga_write_en <= 1'b0;
 				end
 				GET_REG: 
 				begin
@@ -333,6 +332,11 @@ module RISC_V(
 						program_counter <= program_counter + immediate;
 					else
 						program_counter <= program_counter + 32'd4;
+				end
+				CLEANUP_UPDATE: begin
+					enable_register <= 1'b0;
+					write_en <= 2'b0;
+					vga_write_en <= 1'b0;
 				end
 			endcase
 	end
