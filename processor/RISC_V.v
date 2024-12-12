@@ -309,7 +309,7 @@ module RISC_V(
 	reg [4:0]debug_address;
 	reg [4:0]disp_count;
 	reg print_done;
-	reg [2:0]byte_count;
+	reg [2:0]byte_count, print_done_count;
 	reg [7:0]encoded_byte;
 
 	reg [3:0]PS, PNS;
@@ -338,7 +338,7 @@ module RISC_V(
 		DISP_REG: NS = (disp_count == 5'd31)?(PRINT_DONE):(DISP_BYTE);
 		DISP_BYTE: NS = (byte_count == 3'd7)?(GET_REG):(WAIT_BYTE);
 		WAIT_BYTE: NS = DISP_BYTE;
-		PRINT_DONE: NS = WAIT_START;
+		PRINT_DONE: NS = (print_done_count == 3'd7)?(WAIT_START):(PRINT_DONE);
 	end
 
 	always @ (posedge clk or negedge rst)
@@ -370,6 +370,7 @@ module RISC_V(
 		begin
 			print_done <= 1'b1;
 			vga_write_en <= 1'b0;
+			print_done_count <= print_done_count + 3'b1;
 		end
 	end
 
