@@ -3,6 +3,7 @@
 
 void printCharPos(char c, int pos, int color);
 void printColorChar(char c, int color);
+void printString(char string[], int color);
 void printChar(char c);
 void reset();
 void newLine();

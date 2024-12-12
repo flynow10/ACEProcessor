@@ -1,5 +1,6 @@
 #include "print.h"
 
+#include <string.h>
 // #include <stdio.h>
 
 void printCharPos(char c, int pos, int color)
@@ -29,6 +30,16 @@ void printColorChar(char c, int color)
   printCharPos(c, currentPos, color);
   currentPos++;
 }
+
+void printString(char string[], int color)
+{
+  for (int i = 0; i < strlen(string); i++)
+  {
+    char c = string[i];
+    printColorChar(c, color);
+  }
+}
+
 void newLine()
 {
   // printf("\n");

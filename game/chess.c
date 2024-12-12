@@ -18,10 +18,6 @@ int main()
     makeMove(board, moveSet.moves[2]);
   }
   printBoard(board);
-  // printf("%d", perft(board, 4));
-  while (1)
-  {
-  }
   return 0;
 }
 
