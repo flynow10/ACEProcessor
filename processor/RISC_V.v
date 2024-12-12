@@ -125,8 +125,7 @@ module RISC_V(
 	reg [4:0] S;
 	reg [4:0] NS;
 
-	assign LEDR[3:0] = S;
-	assign LEDR[4] = mem_overflow_error;
+	assign LEDR[4:0] = S;
 	assign LEDR[9:5] = SW[9:5];
 
 	// Display
@@ -187,7 +186,7 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(program_counter != 32'h10ec || KEY[0])
+		else if(instruction[6:0] != 7'b0100011 || KEY[0])
 			S <= NS;
 	end
 
