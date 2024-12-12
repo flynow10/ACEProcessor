@@ -10,7 +10,13 @@ int perft(Board *board, int depth);
 int main()
 {
   Board *board = createBoard();
-  makeMove(board, createMove(rowColToSquare(1, 3), rowColToSquare(3, 3)));
+  MoveSet moveSet;
+  for (int i = 0; i < 20; i++)
+  {
+    generateMoves(board, &moveSet);
+
+    makeMove(board, moveSet.moves[2]);
+  }
   printBoard(board);
   // printf("%d", perft(board, 4));
 
