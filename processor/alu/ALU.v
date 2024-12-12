@@ -39,10 +39,10 @@ module ALU #(
           out = a - b;
       end
       OP_SR: begin
-        if(invert_b)
-          out = a >>> b;
-        else
+        if(invert_b == 1'b0)
           out = a >> b;
+        else
+          out = a >>> b;
       end
       OP_SLL: out = a << b;
       OP_SLT: out = a_signed < b_signed;

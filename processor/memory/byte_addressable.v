@@ -46,10 +46,7 @@ always @(*) begin
       if(write_mode == 2'b0)
         NS = START;
       else
-        if(write_mode == 2'b10)
-          NS = READ;
-        else
-          NS = WRITE;
+        NS = READ;
     end
     READ: begin
       if(cycled[0] == 1'b0)
