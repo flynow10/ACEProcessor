@@ -19,8 +19,10 @@ int main()
   }
   printBoard(board);
   // printf("%d", perft(board, 4));
-
-  return board->squares[rowColToSquare(3, 4)];
+  while (1)
+  {
+  }
+  return 0;
 }
 
 int perft(Board *board, int depth)

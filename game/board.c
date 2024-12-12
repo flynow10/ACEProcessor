@@ -113,24 +113,24 @@ void printBoard(Board *board)
     for (int j = 7; j >= 0; j--)
     {
       printChar('+');
-      printChar('-');
+      printColorChar('-', 0x33cc22);
     }
     printChar('+');
     newLine();
 
     for (int j = 0; j < 8; j++)
     {
-      printChar('|');
+      printColorChar('|', 0x33cc22);
       printPiece(board->squares[(i * 8) + j]);
     }
-    printChar('|');
+    printColorChar('|', 0x33cc22);
     newLine();
   }
 
   for (int j = 7; j >= 0; j--)
   {
     printChar('+');
-    printChar('-');
+    printColorChar('-', 0x33cc22);
   }
   printChar('+');
   newLine();
