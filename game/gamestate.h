@@ -2,6 +2,7 @@
 #define gamestate_h
 
 #include "types.h"
+#include <stdbool.h>
 
 typedef struct t_GameState GameState;
 
@@ -11,11 +12,11 @@ struct t_GameState
   int enPassentFile;
   int castleRights;
   Piece lastCapture;
-  GameState *lastGameState;
 };
 
 GameState *createState();
-GameState *nextState(GameState *current);
-void deleteStateStack(GameState *toDelete);
+GameState *getState();
+GameState *popState();
+bool hasState();
 
 #endif

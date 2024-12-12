@@ -1,23 +1,40 @@
 #include "chess.h"
 
-// #include "print.h"
+#include "movegen.h"
 #include "board.h"
 #include "utils.h"
+#include "print.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+
+int perft(Board *board, int depth);
 
 int main()
 {
-  // while(1) {
-  //   printChar('N');
-  //   printChar('a');
-  //   printChar('t');
-  // }
-  Move e4 = createMove(rowColToSquare(4, 1), rowColToSquare(4, 3));
   Board *board = createBoard();
 
-  makeMove(board, e4);
+  // printf("%d", perft(board, 4));
 
-  printBoard(board);
+  return board->squares[rowColToSquare(3, 4)];
+}
 
-  return board->squares[rowColToSquare(4, 3)];
-  return 0;
+int perft(Board *board, int depth)
+{
+  MoveSet moveSet;
+  generateMoves(board, &moveSet);
+  if (depth == 0)
+  {
+    return 1;
+  }
+
+  int sum = 0;
+  for (int i = 0; i < moveSet.moveCount; i++)
+  {
+    makeMove(board, moveSet.moves[i]);
+    sum += perft(board, depth - 1);
+    undoMove(board, moveSet.moves[i]);
+  }
+
+  return sum;
 }

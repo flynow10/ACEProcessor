@@ -12,5 +12,6 @@ typedef struct t_Move
 } Move;
 
 Move createMove(int start, int end);
+Move createPromotion(int start, int end, PieceType promotion);
 
 #endif

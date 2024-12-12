@@ -1,9 +1,11 @@
-#include <stdlib.h>
 #include "gamestate.h"
+
+GameState states[256];
+int currentState = 0;
 
 GameState *createState()
 {
-  GameState *initialState = malloc(sizeof(GameState));
+  GameState *initialState = &states[currentState++];
   initialState->castleRights = 0;
   initialState->enPassentFile = -1;
   initialState->fiftyMoveCounter = 0;
@@ -11,19 +13,17 @@ GameState *createState()
   return initialState;
 }
 
-GameState *nextState(GameState *current)
+GameState *getState()
 {
-  return current->lastGameState;
+  return &states[currentState - 1];
 }
 
-void deleteStateStack(GameState *toDelete)
+GameState *popState()
 {
-  GameState *next = nextState(toDelete);
+  return &states[--currentState];
+}
 
-  do
-  {
-    free(toDelete);
-    toDelete = next;
-    next = nextState(toDelete);
-  } while (next);
+bool hasState()
+{
+  return currentState != 0;
 }
