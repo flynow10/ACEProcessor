@@ -109,6 +109,7 @@ module RISC_V(
 						UPDATE = 4'b111,
 						WAIT_UPDATE = 4'b1000,
 						DONE = 4'b1001, // Debug for halt function
+						WAIT_PRINT = 4'b1010,
 						DECODE_ERROR = 4'b1110,
 						MEM_ERROR = 4'b1101,
 						FSM_ERROR = 4'b1111;
@@ -189,7 +190,14 @@ module RISC_V(
 				NS = FETCH;
 			else
 				NS = START;
-			FETCH: NS = WAIT_FETCH;
+			FETCH: NS = WAIT_PRINT;
+			WAIT_PRINT:
+			begin
+				if (print_done == 1'b1)
+					NS = WAIT_FETCH;
+				else
+					NS = WAIT_PRINT;
+			end
 			WAIT_FETCH: NS = DECODE;
 			DECODE: NS = EXECUTE;
 			EXECUTE: begin
@@ -302,6 +310,92 @@ module RISC_V(
 			raw_reg_write_back = alu_output;
 	end
 
+
+	/*-------------BEGIN PRINT DEBUG FSM-------------*/
+
+	reg [4:0]debug_address;
+	reg [4:0]disp_count;
+	reg print_done;
+	reg [2:0]byte_count;
+	reg [7:0]encoded_byte;
+
+	reg [3:0]PS, PNS;
+
+	parameter WAIT_START = 4'd0,
+			GET_REG = 4'd1,
+			WAIT_REG = 4'd2,
+			DISP_REG = 4'd3,
+			DISP_BYTE = 4'd4;
+			WAIT_BYTE = 4'd5;
+			PRINT_DONE = 4'd6;
+
+	always @ (posedge clk or negedge rst)
+	begin
+		if (rst == 1'b0)
+			PS <= WAIT_START;
+		else
+			PS <= PNS;
+	end
+
+	always @ (*)
+	begin
+		WAIT_START: NS = (S == WAIT_PRINT)?(GET_REG):(WAIT_START);
+		GET_REG: NS = WAIT_REG;
+		WAIT_REG: NS = DISP_REG;
+		DISP_REG: NS = (disp_count == 5'd31)?(PRINT_DONE):(DISP_BYTE);
+		DISP_BYTE: NS = (byte_count == 3'd7)?(GET_REG):(WAIT_BYTE);
+		WAIT_BYTE: NS = DISP_BYTE;
+		PRINT_DONE: NS = WAIT_START;
+	end
+
+	always @ (posedge clk or negedge rst)
+	begin
+		WAIT_START:
+		begin
+			print_done <= 1'b0;
+			disp_count <= 5'b0;
+			byte_count <= 3'b0;
+		end
+		GET_REG: debug_address <= disp_count;
+		DISP_REG: 
+		begin
+			byte_count <= 3'b0;
+			disp_count <= disp_count + 5'b1;
+		end
+		DISP_BYTE: 
+		begin
+			vga_write_address <= (disp_count * 13'd80) + byte_count;
+			current_byte <= debug_reg_out >> (3'd7 - byte_count);
+			vga_input_data <= {encoded_byte, 24'b111111111111111111111111};
+		end
+		WAIT_BYTE: byte_count <= byte_count + 3'b1;
+		PRINT_DONE: print_done <= 1'b1;
+	end
+
+	always @ (*)
+	begin
+		case (current_byte)
+			4'h0: encoded_byte = 8'h30;
+			4'h1: encoded_byte = 8'h31;
+			4'h2: encoded_byte = 8'h32;
+			4'h3: encoded_byte = 8'h33;
+			4'h4: encoded_byte = 8'h34;
+			4'h5: encoded_byte = 8'h35;
+			4'h6: encoded_byte = 8'h36;
+			4'h7: encoded_byte = 8'h37;
+			4'h8: encoded_byte = 8'h38;
+			4'h9: encoded_byte = 8'h39;
+			4'hA: encoded_byte = 8'h41;
+			4'hB: encoded_byte = 8'h42;
+			4'hC: encoded_byte = 8'h43;
+			4'hD: encoded_byte = 8'h44;
+			4'hE: encoded_byte = 8'h45;
+			4'hF: encoded_byte = 8'h46;
+		endcase
+	end
+
+	/*-------------END PRINT DEBUG FSM-------------*/
+
 	instruction_decoder #(WORD_SIZE) instruction_decoder(
 		.instruction(instruction),
 		.rd(rd),
@@ -328,7 +422,8 @@ module RISC_V(
 		.rd(rd),
 		.rs1(rs1),
 		.rs2(rs2),
-		.debug_reg(SW[9:5]),
+		//.debug_reg(SW[9:5]),
+		.debug_reg(debug_address),
 		.data(register_write_back),
 		.rv1(rv1),
 		.rv2(rv2),
