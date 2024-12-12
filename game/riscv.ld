@@ -1,50 +1,35 @@
-ENTRY(_start)
 
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x10000
-    RAM   (rw) : ORIGIN = 0x00010000, LENGTH = 0x10000
+    ram (ax)  : ORIGIN = 0x00000000, LENGTH = 0x0040000
 }
 
-SECTIONS
+SECTIONS 
 {
-    .text :
+    .text : 
     {
-        KEEP(*(.vectors))
+        chess.o(.text*)
         *(.text*)
-        *(.rodata*)
-        KEEP(*(.init))
-        KEEP(*(.fini))
-    } > FLASH
+    }  > ram
 
-    .data :
+    .rodata ALIGN(4) : 
+    {
+        *(.rodata*)
+        *(.srodata*)
+    }  > ram
+
+    .data ALIGN (8) :
     {
         *(.data*)
-        PROVIDE(__global_pointer$ = . + 0x800);
-    } > RAM
+        *(.sdata*)
+    } > ram
 
-    .bss :
+    .bss ALIGN(8) (NOLOAD) :
     {
-        __bss_start = .;
         *(.bss*)
+        *(.sbss*)
         *(COMMON)
-        __bss_end = .;
-    } > RAM
+    } > ram
 
-    .stack :
-    {
-        . = ALIGN(4);
-        _stack_start = .;
-        . = . + 0x1000;
-        _stack_end = .;
-    } > RAM
-
-    .heap :
-    {
-        _heap_start = .;
-        . = . + 0x2000;
-        _heap_end = .;
-    } > RAM
-
-    _end = .;
+	_end = .;
 }
