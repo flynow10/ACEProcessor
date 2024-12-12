@@ -318,8 +318,8 @@ module RISC_V(
 			GET_REG = 4'd1,
 			WAIT_REG = 4'd2,
 			DISP_REG = 4'd3,
-			DISP_BYTE = 4'd4;
-			WAIT_BYTE = 4'd5;
+			DISP_BYTE = 4'd4,
+			WAIT_BYTE = 4'd5,
 			PRINT_DONE = 4'd6;
 
 	always @ (posedge clk or negedge rst)
@@ -349,7 +349,11 @@ module RISC_V(
 			disp_count <= 5'b0;
 			byte_count <= 3'b0;
 		end
-		GET_REG: debug_address <= disp_count;
+		GET_REG: 
+		begin
+			debug_address <= disp_count;
+			vga_write_en <= 1'b1;
+		end
 		DISP_REG: 
 		begin
 			byte_count <= 3'b0;
@@ -362,7 +366,11 @@ module RISC_V(
 			vga_input_data <= {encoded_byte, 24'b111111111111111111111111};
 		end
 		WAIT_BYTE: byte_count <= byte_count + 3'b1;
-		PRINT_DONE: print_done <= 1'b1;
+		PRINT_DONE: 
+		begin
+			print_done <= 1'b1;
+			vga_write_en <= 1'b0;
+		end
 	end
 
 	always @ (*)
