@@ -166,7 +166,6 @@ module RISC_V(
 	reg [WORD_SIZE-1:0] alu_input_b;
 	wire [WORD_SIZE-1:0] alu_output;
 	reg enable_register;
-	reg [WORD_SIZE-1:0] raw_reg_write_back;
 	wire branch_taken;
 
 	// Mem write back
@@ -180,7 +179,7 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(program_counter != 32'h174 || KEY[0])
+		else if(program_counter != 32'h10ec || KEY[0])
 			S <= NS;
 	end
 
@@ -269,7 +268,18 @@ module RISC_V(
 					vga_write_address <= alu_output[12:0];
 				end
 				UPDATE: begin
-					register_write_back <= raw_reg_write_back;
+					if(jump == 1'b1)
+						register_write_back <= program_counter + 32'd4;
+					else if(mem_to_reg == 1'b1)
+						case (reg_load_size)
+							3'b000: register_write_back <= {{24{memory_byte_output[7]}}, memory_byte_output};
+							3'b001: register_write_back <= {{16{memory_half_word_output[15]}}, memory_half_word_output};
+							3'b100: register_write_back <= {{24{1'b0}}, memory_byte_output};
+							3'b101: register_write_back <= {{16{1'b0}}, memory_half_word_output};
+							default: register_write_back <= memory_word_output;
+						endcase
+					else
+						register_write_back <= alu_output;
 					enable_register <= 1'b1;
 					if(mem_write_size != 2'b0) begin
 						if(memory_address >= 32'h00020000)
@@ -293,23 +303,6 @@ module RISC_V(
 				end
 			endcase
 	end
-
-	// Prepare reg write back at all times
-	always @(*) begin
-		if(jump == 1'b1)
-			raw_reg_write_back = program_counter + 32'd4;
-		else if(mem_to_reg == 1'b1)
-			case (reg_load_size)
-				3'b000: raw_reg_write_back = {{24{memory_byte_output[7]}}, memory_byte_output};
-				3'b001: raw_reg_write_back = {{16{memory_half_word_output[15]}}, memory_half_word_output};
-				3'b100: raw_reg_write_back = {{24{1'b0}}, memory_byte_output};
-				3'b101: raw_reg_write_back = {{16{1'b0}}, memory_half_word_output};
-				default: raw_reg_write_back = memory_word_output;
-			endcase
-		else
-			raw_reg_write_back = alu_output;
-	end
-
 
 	/*-------------BEGIN PRINT DEBUG FSM-------------*/
 
@@ -467,7 +460,7 @@ module RISC_V(
 			3'b100: to_display = immediate;
 			3'b101: to_display = rd;
 			3'b110: to_display = program_counter;
-			3'b111: to_display = vga_write_address;
+			3'b111: to_display = register_write_back;
 			default: to_display = 32'b0;
 		endcase
 	end
