@@ -192,10 +192,10 @@ module RISC_V(
 
 	always @(*) begin
 		case (S)
-			START: /*if(KEY[3] == 1'b0)
-				NS = FETCH;
-			else*/
+			START: /*if(KEY[3] != 1'b0)
 				NS = START;
+			else*/
+				NS = FETCH;
 			FETCH: NS = WAIT_FETCH;
 			GET_REG: NS = WAIT_REG;
 			WAIT_REG: NS = DISP_REG;
