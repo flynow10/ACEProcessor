@@ -28,6 +28,13 @@ void printValue(int val)
 {
   while (1)
   {
+    if (!isKeyPressed(1))
+    {
+      break;
+    }
+  }
+  while (1)
+  {
     if (isKeyPressed(1))
     {
       printInt(val);
