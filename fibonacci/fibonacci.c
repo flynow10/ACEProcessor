@@ -32,8 +32,18 @@ int main()
 char *intToString(int i)
 {
     char str[16];
-    sprintf(str, "%d", i);
-    return str;
+    char reversedStr[16];
+    int idx = 0;
+    while (i > 0)
+    {
+        str[idx++] = (char)((i % 10) + 48);
+        i /= 10;
+    }
+    for (int k = 0; k < idx; k++)
+    {
+        reversedStr[k] = str[idx - k];
+    }
+    return reversedStr;
 }
 
 void printValue(int val)
