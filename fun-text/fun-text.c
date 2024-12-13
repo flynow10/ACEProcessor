@@ -4,7 +4,9 @@
 
 int main()
 {
-    int color = 0;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
     char *string = "Hello Dr. Jamieson!";
     while (1)
     {
@@ -12,12 +14,10 @@ int main()
         newLine();
         for (int i = 0; i < strlen(string); i++)
         {
-            printColorChar(string[i], color);
-            color += 0x40201;
-            if (color > 0xffffff)
-            {
-                color = color % 0xffffff;
-            }
+            printColorChar(string[i], (red << 16) | (green << 8) | blue);
+            red = (red + 0x4) % 0xff;
+            green = (green + 0x2) % 0xff;
+            blue = (blue + 1) % 0xff;
         }
         for (int i = 0; i < 250000; i++)
         {
