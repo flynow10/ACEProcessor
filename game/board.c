@@ -106,7 +106,7 @@ void undoMove(Board *board, Move move)
   board->isWhiteToMove = !board->isWhiteToMove;
 }
 
-void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares)
+void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare)
 {
   reset();
   for (int i = 7; i >= 0; i--)
@@ -141,6 +141,10 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
       if (isMove)
       {
         color = 0xcc2222;
+      }
+      if (selectedMoveSquare == square)
+      {
+        color = 0x3333ee;
       }
       printChar('|');
       if (isMove && board->squares[square] == None)

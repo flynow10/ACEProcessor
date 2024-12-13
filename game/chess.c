@@ -1,7 +1,6 @@
 #include "chess.h"
 
 #include "board.h"
-#include "movegen.h"
 #include "types.h"
 #include "utils.h"
 #include "print.h"
@@ -13,6 +12,9 @@
 
 int perft(Board *board, int depth);
 
+int moveSquares[64];
+int numMoveSquares = 0;
+
 int main()
 {
   Board *board = createBoard();
@@ -21,18 +23,9 @@ int main()
   int selectedSquare = 0;
   int selectedMove = 0;
   int phase = PIECE_SELECTION;
-  int moveSquares[64];
-  int numMoveSquares = 0;
-  for (int i = 0; i < moveSet.moveCount; i++)
-  {
-    Move move = moveSet.moves[i];
-    if (move.startSquare == selectedSquare)
-    {
-      moveSquares[numMoveSquares++] = move.endSquare;
-    }
-  }
-  printBoard(board, selectedSquare, moveSquares, numMoveSquares);
-  printMoveSet(&moveSet);
+
+  updateMoveSquares(selectedSquare, &moveSet);
+  printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
 
   while (1)
   {
@@ -45,17 +38,9 @@ int main()
         do
         {
           selectedSquare = (selectedSquare + 1) % 64;
-        } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
-        numMoveSquares = 0;
-        for (int i = 0; i < moveSet.moveCount; i++)
-        {
-          Move move = moveSet.moves[i];
-          if (move.startSquare == selectedSquare)
-          {
-            moveSquares[numMoveSquares++] = move.endSquare;
-          }
-        }
-        printBoard(board, selectedSquare, moveSquares, numMoveSquares);
+        } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
+        updateMoveSquares(selectedSquare, &moveSet);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
       }
 
       if (pressedFrame[1])
@@ -67,17 +52,9 @@ int main()
           {
             selectedSquare = 63;
           }
-        } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
-        numMoveSquares = 0;
-        for (int i = 0; i < moveSet.moveCount; i++)
-        {
-          Move move = moveSet.moves[i];
-          if (move.startSquare == selectedSquare)
-          {
-            moveSquares[numMoveSquares++] = move.endSquare;
-          }
-        }
-        printBoard(board, selectedSquare, moveSquares, numMoveSquares);
+        } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
+        updateMoveSquares(selectedSquare, &moveSet);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
       }
 
       if (pressedFrame[2])
@@ -87,19 +64,41 @@ int main()
     }
     else if (phase == MOVE_SELECTION)
     {
+      if (pressedFrame[0])
+      {
+        do
+        {
+          selectedMove = (selectedMove + 1) % moveSet.moveCount;
+        } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+      }
+
+      if (pressedFrame[1])
+      {
+        do
+        {
+          selectedMove--;
+          if (selectedMove == -1)
+          {
+            selectedMove = moveSet.moveCount - 1;
+          }
+        } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+      }
     }
   }
   return 0;
 }
 
-void createMoveSquareList(int selectedSquare, MoveSet *moveSet, int moveSquares[], int *numMoves)
+void updateMoveSquares(int selectedSquare, MoveSet *moveSet)
 {
+  numMoveSquares = 0;
   for (int i = 0; i < moveSet->moveCount; i++)
   {
     Move move = moveSet->moves[i];
     if (move.startSquare == selectedSquare)
     {
-      moveSquares[*numMoves++] = move.endSquare;
+      moveSquares[numMoveSquares++] = move.endSquare;
     }
   }
 }
