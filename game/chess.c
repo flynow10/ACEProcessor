@@ -45,6 +45,7 @@ int main()
         {
           selectedSquare = (selectedSquare + 1) % 64;
         } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
+        numMoveSquares = 0;
         for (int i = 0; i < moveSet.moveCount; i++)
         {
           Move move = moveSet.moves[i];
@@ -66,6 +67,7 @@ int main()
             selectedSquare = 63;
           }
         } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
+        numMoveSquares = 0;
         for (int i = 0; i < moveSet.moveCount; i++)
         {
           Move move = moveSet.moves[i];
