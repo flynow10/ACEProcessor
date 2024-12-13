@@ -96,6 +96,7 @@ int main()
       if (pressedFrame[2])
       {
         makeMove(board, moveSet.moves[selectedMove]);
+        generateMoves(board, &moveSet);
         selectedSquare = 0;
         while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove)
         {
