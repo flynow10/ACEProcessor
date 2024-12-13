@@ -2,6 +2,7 @@
 
 #include "board.h"
 #include "movegen.h"
+#include "types.h"
 #include "utils.h"
 #include "print.h"
 #include "input.h"
@@ -31,24 +32,11 @@ int main()
   //   }
   // }
   printBoard(board, selectedSquare, moveSquares, numMoveSquares);
-  bool pressed[4] = {false, false, false, false};
 
   while (1)
   {
     bool pressedFrame[4] = {false, false, false, false};
-    for (int i = 0; i < 4; i++)
-    {
-      if (pressed[i] && !isKeyPressed(i))
-      {
-        pressed[i] = false;
-      }
-
-      if (!pressed[i] && isKeyPressed(i))
-      {
-        pressed[i] = true;
-        pressedFrame[i] = true;
-      }
-    }
+    getKeysPressed(pressedFrame);
     if (phase == PIECE_SELECTION)
     {
       if (pressedFrame[0])
@@ -56,7 +44,7 @@ int main()
         do
         {
           selectedSquare = (selectedSquare + 1) % 64;
-        } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x1) == White);
+        } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
         // for (int i = 0; i < moveSet.moveCount; i++)
         // {
         //   Move move = moveSet.moves[i];
@@ -77,7 +65,7 @@ int main()
           {
             selectedSquare = 63;
           }
-        } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x1) == White);
+        } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
         // for (int i = 0; i < moveSet.moveCount; i++)
         // {
         //   Move move = moveSet.moves[i];

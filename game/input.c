@@ -12,3 +12,22 @@ bool isKeyPressed(int key)
           :);
   return output == 0;
 }
+
+bool pressed[4] = {false, false, false, false};
+
+void getKeysPressed(bool pressedFrame[4])
+{
+  for (int i = 0; i < 4; i++)
+  {
+    if (pressed[i] && !isKeyPressed(i))
+    {
+      pressed[i] = false;
+    }
+
+    if (!pressed[i] && isKeyPressed(i))
+    {
+      pressed[i] = true;
+      pressedFrame[i] = true;
+    }
+  }
+}

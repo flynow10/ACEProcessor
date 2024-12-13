@@ -5,4 +5,6 @@
 
 bool isKeyPressed(int key);
 
+void getKeysPressed(bool pressed[4]);
+
 #endif
