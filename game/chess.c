@@ -23,14 +23,14 @@ int main()
   int phase = PIECE_SELECTION;
   int moveSquares[64];
   int numMoveSquares = 0;
-  // for (int i = 0; i < moveSet.moveCount; i++)
-  // {
-  //   Move move = moveSet.moves[i];
-  //   if (move.startSquare == selectedSquare)
-  //   {
-  //     moveSquares[numMoveSquares++] = move.endSquare;
-  //   }
-  // }
+  for (int i = 0; i < moveSet.moveCount; i++)
+  {
+    Move move = moveSet.moves[i];
+    if (move.startSquare == selectedSquare)
+    {
+      moveSquares[numMoveSquares++] = move.endSquare;
+    }
+  }
   printBoard(board, selectedSquare, moveSquares, numMoveSquares);
 
   while (1)
@@ -45,14 +45,14 @@ int main()
         {
           selectedSquare = (selectedSquare + 1) % 64;
         } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
-        // for (int i = 0; i < moveSet.moveCount; i++)
-        // {
-        //   Move move = moveSet.moves[i];
-        //   if (move.startSquare == selectedSquare)
-        //   {
-        //     moveSquares[numMoveSquares++] = move.endSquare;
-        //   }
-        // }
+        for (int i = 0; i < moveSet.moveCount; i++)
+        {
+          Move move = moveSet.moves[i];
+          if (move.startSquare == selectedSquare)
+          {
+            moveSquares[numMoveSquares++] = move.endSquare;
+          }
+        }
         printBoard(board, selectedSquare, moveSquares, numMoveSquares);
       }
 
@@ -66,14 +66,14 @@ int main()
             selectedSquare = 63;
           }
         } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x10) != White);
-        // for (int i = 0; i < moveSet.moveCount; i++)
-        // {
-        //   Move move = moveSet.moves[i];
-        //   if (move.startSquare == selectedSquare)
-        //   {
-        //     moveSquares[numMoveSquares++] = move.endSquare;
-        //   }
-        // }
+        for (int i = 0; i < moveSet.moveCount; i++)
+        {
+          Move move = moveSet.moves[i];
+          if (move.startSquare == selectedSquare)
+          {
+            moveSquares[numMoveSquares++] = move.endSquare;
+          }
+        }
         printBoard(board, selectedSquare, moveSquares, numMoveSquares);
       }
 
