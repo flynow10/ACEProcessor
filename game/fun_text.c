@@ -3,18 +3,14 @@
 int main()
 {
     int color = 0;
-    while (1)
+    char *string = "Hello Dr. Jamieson";
+    while (1) 
     {
+        printString(string, color);
         reset();
-        for (int i = 33; i < 127; i++)
+        for (int i = 0; i < 0xffffff; i++) 
         {
-            printColorChar((char)(i), color);
             color++;
-            if (color >= 0xffffff)
-            {
-                color = 0;
-            }
         }
     }
-    return 0;
 }
