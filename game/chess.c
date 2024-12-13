@@ -73,21 +73,31 @@ int main()
     {
       if (pressedFrame[0])
       {
+        int count = 0;
         do
         {
           selectedMove = (selectedMove + 1) % moveSet.moveCount;
+          if (count++ >= 256)
+          {
+            break;
+          }
         } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
       }
 
       if (pressedFrame[1])
       {
+        int count = 0;
         do
         {
           selectedMove--;
           if (selectedMove == -1)
           {
             selectedMove = moveSet.moveCount - 1;
+          }
+          if (count++ >= 256)
+          {
+            break;
           }
         } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
