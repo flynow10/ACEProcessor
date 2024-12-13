@@ -32,6 +32,7 @@ int main()
     }
   }
   printBoard(board, selectedSquare, moveSquares, numMoveSquares);
+  printMoveSet(&moveSet);
 
   while (1)
   {
