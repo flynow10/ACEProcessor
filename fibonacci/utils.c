@@ -3,21 +3,25 @@
 #include "input.h"
 #include "print.h"
 
-char *intToString(int i)
+void printInt(int i)
 {
-  char *str = "000000000000000";
-  int idx = 0;
-  while (i > 0)
+  int reducer = i;
+  int digits = 0;
+  while (reducer > 0)
   {
-    str[idx++] = (char)((i % 10) + 48);
-    i /= 10;
+    reducer /= 10;
+    digits + 1;
   }
-  char reversedStr[idx];
-  for (int k = 0; k < idx; k++)
+  for (int idx = digits; idx >= 0; idx++)
   {
-    reversedStr[k] = str[idx - k];
+    int divisor = 1;
+    for (int j = 0; j < idx; j++)
+    {
+      divisor = divisor * 10;
+    }
+
+    printChar(((i / divisor) % 10) + 48);
   }
-  return reversedStr;
 }
 
 void printValue(int val)
@@ -26,7 +30,7 @@ void printValue(int val)
   {
     if (isKeyPressed(1))
     {
-      printString(intToString(val), 0xffffff);
+      printInt(val);
       return;
     }
   }

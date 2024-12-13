@@ -1,7 +1,7 @@
 #ifndef utils_h
 #define utils_h
 
-char *intToString(int i);
+void printInt(int i);
 void printValue(int val);
 
 #endif
