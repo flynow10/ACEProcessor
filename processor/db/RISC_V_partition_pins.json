@@ -356,7 +356,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "KEY[2]",
+					"name" : "CLOCK_50",
 					"strict" : false
 				},
 				{
@@ -364,15 +364,15 @@
 					"strict" : false
 				},
 				{
-					"name" : "KEY[3]",
-					"strict" : false
-				},
-				{
-					"name" : "CLOCK_50",
-					"strict" : false
-				},
-				{
 					"name" : "KEY[1]",
+					"strict" : false
+				},
+				{
+					"name" : "KEY[2]",
+					"strict" : false
+				},
+				{
+					"name" : "KEY[3]",
 					"strict" : false
 				}
 			]

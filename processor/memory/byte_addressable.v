@@ -79,7 +79,7 @@ always @(posedge clk) begin
     end
     READ: cycled[0] <= 1'b1;
     WRITE: begin
-      if(address >= 32'h00020000 || address <= 32'h2644)
+      if(address >= 32'h00020000)
         error <= 1'b1;
       write_en <= 1'b1;
       cycled[1] <= 1'b1;
