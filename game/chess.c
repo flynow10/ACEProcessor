@@ -19,145 +19,136 @@ int numMoveSquares = 0;
 int main()
 {
   Board *board = createBoard();
-  for (int i = 0; i < 5; i++)
+  MoveSet moveSet;
+  generateMoves(board, &moveSet);
+  int selectedSquare = 0;
+  int selectedMove = 0;
+  int phase = PIECE_SELECTION;
+
+  updateMoveSquares(selectedSquare, &moveSet);
+  printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+
+  while (1)
   {
-    int perftResult = perft(board, i);
-    printString("Perft Test ", 0xffffff);
-    printInt(i, 0xffffff);
-    printString(": ", 0xffffff);
-    printInt(perftResult, 0xffffff);
+    bool pressedFrame[4] = {false, false, false, false};
+    getKeysPressed(pressedFrame);
+    if (phase == PIECE_SELECTION)
+    {
+      if (pressedFrame[0])
+      {
+        do
+        {
+          selectedSquare = (selectedSquare + 1) % 64;
+        } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
+        updateMoveSquares(selectedSquare, &moveSet);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+      }
+
+      if (pressedFrame[1])
+      {
+        do
+        {
+          selectedSquare--;
+          if (selectedSquare == -1)
+          {
+            selectedSquare = 63;
+          }
+        } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
+        updateMoveSquares(selectedSquare, &moveSet);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+      }
+
+      if (pressedFrame[2])
+      {
+        phase = MOVE_SELECTION;
+        selectedMove = 0;
+        int count = 0;
+        while (moveSet.moves[selectedMove].startSquare != selectedSquare)
+        {
+          selectedMove = (selectedMove + 1) % moveSet.moveCount;
+          if (count++ >= 256)
+          {
+            break;
+          }
+        }
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+      }
+    }
+    else if (phase == MOVE_SELECTION)
+    {
+      if (pressedFrame[0])
+      {
+        int count = 0;
+        do
+        {
+          selectedMove = (selectedMove + 1) % moveSet.moveCount;
+          if (count++ >= 256)
+          {
+            break;
+          }
+        } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+      }
+
+      if (pressedFrame[1])
+      {
+        int count = 0;
+        do
+        {
+          selectedMove--;
+          if (selectedMove == -1)
+          {
+            selectedMove = moveSet.moveCount - 1;
+          }
+          if (count++ >= 256)
+          {
+            break;
+          }
+        } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+      }
+
+      if (pressedFrame[2])
+      {
+        makeMove(board, moveSet.moves[selectedMove]);
+        generateMoves(board, &moveSet);
+        if (moveSet.moveCount == 0)
+        {
+          if (moveSet.isInCheck)
+          {
+            if (board->isWhiteToMove)
+            {
+              printString("Black wins!", 0xffffff);
+            }
+            else
+            {
+              printString("White wins!", 0xffffff);
+            }
+          }
+          else
+          {
+            printString("Stalemate!", 0xffffff);
+          }
+          break;
+        }
+        selectedSquare = 0;
+        while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove)
+        {
+          selectedSquare = (selectedSquare + 1) % 64;
+        }
+        selectedMove = -1;
+        updateMoveSquares(selectedSquare, &moveSet);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+        phase = PIECE_SELECTION;
+      }
+      if (pressedFrame[3])
+      {
+        selectedMove = -1;
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+        phase = PIECE_SELECTION;
+      }
+    }
   }
-
-  // MoveSet moveSet;
-  // generateMoves(board, &moveSet);
-  // int selectedSquare = 0;
-  // int selectedMove = 0;
-  // int phase = PIECE_SELECTION;
-
-  // updateMoveSquares(selectedSquare, &moveSet);
-  // printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
-
-  // while (1)
-  // {
-  //   bool pressedFrame[4] = {false, false, false, false};
-  //   getKeysPressed(pressedFrame);
-  //   if (phase == PIECE_SELECTION)
-  //   {
-  //     if (pressedFrame[0])
-  //     {
-  //       do
-  //       {
-  //         selectedSquare = (selectedSquare + 1) % 64;
-  //       } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
-  //       updateMoveSquares(selectedSquare, &moveSet);
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
-  //     }
-
-  //     if (pressedFrame[1])
-  //     {
-  //       do
-  //       {
-  //         selectedSquare--;
-  //         if (selectedSquare == -1)
-  //         {
-  //           selectedSquare = 63;
-  //         }
-  //       } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
-  //       updateMoveSquares(selectedSquare, &moveSet);
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
-  //     }
-
-  //     if (pressedFrame[2])
-  //     {
-  //       phase = MOVE_SELECTION;
-  //       selectedMove = 0;
-  //       int count = 0;
-  //       while (moveSet.moves[selectedMove].startSquare != selectedSquare)
-  //       {
-  //         selectedMove = (selectedMove + 1) % moveSet.moveCount;
-  //         if (count++ >= 256)
-  //         {
-  //           break;
-  //         }
-  //       }
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
-  //     }
-  //   }
-  //   else if (phase == MOVE_SELECTION)
-  //   {
-  //     if (pressedFrame[0])
-  //     {
-  //       int count = 0;
-  //       do
-  //       {
-  //         selectedMove = (selectedMove + 1) % moveSet.moveCount;
-  //         if (count++ >= 256)
-  //         {
-  //           break;
-  //         }
-  //       } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
-  //     }
-
-  //     if (pressedFrame[1])
-  //     {
-  //       int count = 0;
-  //       do
-  //       {
-  //         selectedMove--;
-  //         if (selectedMove == -1)
-  //         {
-  //           selectedMove = moveSet.moveCount - 1;
-  //         }
-  //         if (count++ >= 256)
-  //         {
-  //           break;
-  //         }
-  //       } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
-  //     }
-
-  //     if (pressedFrame[2])
-  //     {
-  //       makeMove(board, moveSet.moves[selectedMove]);
-  //       generateMoves(board, &moveSet);
-  //       if (moveSet.moveCount == 0)
-  //       {
-  //         if (moveSet.isInCheck)
-  //         {
-  //           if (board->isWhiteToMove)
-  //           {
-  //             printString("Black wins!", 0xffffff);
-  //           }
-  //           else
-  //           {
-  //             printString("White wins!", 0xffffff);
-  //           }
-  //         }
-  //         else
-  //         {
-  //           printString("Stalemate!", 0xffffff);
-  //         }
-  //         break;
-  //       }
-  //       selectedSquare = 0;
-  //       while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove)
-  //       {
-  //         selectedSquare = (selectedSquare + 1) % 64;
-  //       }
-  //       selectedMove = -1;
-  //       updateMoveSquares(selectedSquare, &moveSet);
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
-  //       phase = PIECE_SELECTION;
-  //     }
-  //     if (pressedFrame[3])
-  //     {
-  //       selectedMove = -1;
-  //       printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
-  //       phase = PIECE_SELECTION;
-  //     }
-  //   }
-  // }
 
   while (1)
   {
