@@ -1,12 +1,17 @@
 #include "print.h"
+#include "input.h"
 #include <stdio.h>
 
-int main() {
+char *intToString(int i);
+void printValue(int val);
+
+int main()
+{
     int val1 = 0;
     int val2 = 1;
     int val3 = 0;
 
-    while(1)
+    while (1)
     {
         for (int i = 0; i < 10; i++)
         {
@@ -24,14 +29,16 @@ int main() {
     }
 }
 
-char *intToString(int i) {
-    char *str[16];
+char *intToString(int i)
+{
+    char str[16];
     sprintf(str, "%d", i);
     return str;
 }
 
-void printValue(int val) {
-    while(1)
+void printValue(int val)
+{
+    while (1)
     {
         if (isKeyPressed(1))
         {
@@ -40,4 +47,3 @@ void printValue(int val) {
         }
     }
 }
-

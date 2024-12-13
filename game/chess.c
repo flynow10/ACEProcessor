@@ -22,14 +22,14 @@ int main()
   int phase = PIECE_SELECTION;
   int moveSquares[64];
   int numMoveSquares = 0;
-  for (int i = 0; i < moveSet.moveCount; i++)
-  {
-    Move move = moveSet.moves[i];
-    if (move.startSquare == selectedSquare)
-    {
-      moveSquares[numMoveSquares++] = move.endSquare;
-    }
-  }
+  // for (int i = 0; i < moveSet.moveCount; i++)
+  // {
+  //   Move move = moveSet.moves[i];
+  //   if (move.startSquare == selectedSquare)
+  //   {
+  //     moveSquares[numMoveSquares++] = move.endSquare;
+  //   }
+  // }
   printBoard(board, selectedSquare, moveSquares, numMoveSquares);
   bool pressed[4] = {false, false, false, false};
 
