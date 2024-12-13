@@ -96,7 +96,7 @@ module RISC_V(
 	always @(*) begin
 		clk = CLOCK_50; //(KEY[0] & S != GET_REG & S != WAIT_REG & S != DISP_REG & S != DISP_BYTE & S != WAIT_BYTE & S != INCREMENT_DISPLAY & S != INCREMENT_BYTE) ? ~KEY[1] : CLOCK_50;
 	end
-	assign rst = KEY[2];
+	assign rst = SW[9];
 
 	// FSM Control
 	parameter START = 5'b0,
@@ -192,9 +192,9 @@ module RISC_V(
 
 	always @(*) begin
 		case (S)
-			START: if(KEY[3] == 1'b0)
+			START: /*if(KEY[3] == 1'b0)
 				NS = FETCH;
-			else
+			else*/
 				NS = START;
 			FETCH: NS = WAIT_FETCH;
 			GET_REG: NS = WAIT_REG;
