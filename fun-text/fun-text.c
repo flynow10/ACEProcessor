@@ -17,7 +17,7 @@ int main()
                 color = color % 0xffffff;
             }
         }
-        for (int i = 0; i < 2500000; i++)
+        for (int i = 0; i < 250000; i++)
         {
             // wait for a time
         }
