@@ -129,6 +129,7 @@ int main()
           {
             printString("Stalemate!", 0xffffff);
           }
+          printBoard(board, -1, moveSquares, numMoveSquares, -1);
           break;
         }
         selectedSquare = 0;
