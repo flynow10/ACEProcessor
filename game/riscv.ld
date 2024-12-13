@@ -8,7 +8,6 @@ SECTIONS
 {
     .text : 
     {
-        chess.o(.text*)
         *(.text*)
     }  > ram
 
@@ -22,10 +21,12 @@ SECTIONS
     {
         *(.data*)
         *(.sdata*)
+        PROVIDE (__global_pointer$ = .);
     } > ram
 
     .bss ALIGN(8) (NOLOAD) :
     {
+        __bss_start = .;
         *(.bss*)
         *(.sbss*)
         *(COMMON)

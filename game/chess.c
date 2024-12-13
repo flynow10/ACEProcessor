@@ -10,6 +10,7 @@
 #define PIECE_SELECTION 0
 #define MOVE_SELECTION 1
 
+void updateMoveSquares(int selectedSquare, MoveSet *moveSet);
 int perft(Board *board, int depth);
 
 int moveSquares[64];
