@@ -241,6 +241,8 @@ void generateMoves(Board *board, MoveSet *moveSet)
       }
     }
   }
+
+  moveSet->isInCheck = isInCheck(board, board->isWhiteToMove);
 }
 
 // Pawns

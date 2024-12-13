@@ -97,6 +97,24 @@ int main()
       {
         makeMove(board, moveSet.moves[selectedMove]);
         generateMoves(board, &moveSet);
+        if (moveSet.moveCount == 0)
+        {
+          if (moveSet.isInCheck)
+          {
+            if (board->isWhiteToMove)
+            {
+              printString("Black wins!", 0xffffff);
+            }
+            else
+            {
+              printString("White wins!", 0xffffff);
+            }
+          }
+          else
+          {
+            printString("Stalemate!", 0xffffff);
+          }
+        }
         selectedSquare = 0;
         while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove)
         {
@@ -114,6 +132,10 @@ int main()
         phase = PIECE_SELECTION;
       }
     }
+  }
+
+  while (1)
+  {
   }
   return 0;
 }

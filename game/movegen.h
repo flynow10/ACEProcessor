@@ -3,11 +3,13 @@
 
 #include "move.h"
 #include "board.h"
+#include <stdbool.h>
 
 typedef struct moveset_t
 {
   Move moves[256];
   int moveCount;
+  bool isInCheck;
 } MoveSet;
 
 void initializeMoveSet(MoveSet *moveSet);
