@@ -302,8 +302,8 @@ module RISC_V(
 					if(jump == 1'b1)
 						register_write_back <= program_counter + 32'd4;
 					else if(mem_to_reg == 1'b1)
-						if(alu_output[29]) begin
-							register_write_back <= {{31{1'b0}}, KEY[alu[1:0]]};
+						if(alu_output[29] == 1'b1) begin
+							register_write_back <= {{31{1'b0}}, KEY[alu_output[1:0]]};
 						end else
 							case (reg_load_size)
 								3'b000: register_write_back <= {{24{memory_byte_output[7]}}, memory_byte_output};
