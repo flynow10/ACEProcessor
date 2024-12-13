@@ -62,9 +62,14 @@ int main()
       {
         phase = MOVE_SELECTION;
         selectedMove = 0;
+        int count = 0;
         while (moveSet.moves[selectedMove].startSquare != selectedSquare)
         {
           selectedMove = (selectedMove + 1) % moveSet.moveCount;
+          if (count++ >= 256)
+          {
+            break;
+          }
         }
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
       }
