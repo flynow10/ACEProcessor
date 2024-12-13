@@ -186,7 +186,7 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(program_counter != 32'h1020 || KEY[0])
+		else //if(program_counter != 32'h1020 || KEY[0])
 			S <= NS;
 	end
 
@@ -196,7 +196,7 @@ module RISC_V(
 				NS = FETCH;
 			else
 				NS = START;
-			FETCH: NS = GET_REG;
+			FETCH: NS = WAIT_FETCH;
 			GET_REG: NS = WAIT_REG;
 			WAIT_REG: NS = DISP_REG;
 			DISP_REG: NS = (disp_count == 6'd32)?(PRINT_DONE):(DISP_BYTE);
