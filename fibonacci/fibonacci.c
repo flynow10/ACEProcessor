@@ -7,6 +7,9 @@ int main()
 {
     int val1 = 231;
     printInt(val1);
+    while (1)
+    {
+    }
     // int val2 = 1;
     // int val3 = 0;
 
