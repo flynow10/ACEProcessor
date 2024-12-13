@@ -5,13 +5,13 @@
 int main()
 {
     int color = 0;
-    char *string = "Hello Dr. Jamieson";
+    char *string = "Hello Dr. Jamieson!";
     while (1)
     {
         for (int i = 0; i < strlen(string); i++)
         {
             printColorChar(string[i], color);
-            color += 0x421;
+            color += 0x40201;
             if (color > 0xffffff)
             {
                 color = color % 0xffffff;
