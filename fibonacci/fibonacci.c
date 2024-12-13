@@ -8,6 +8,8 @@ int main()
     int val1 = 0;
     int val2 = 1;
     int val3 = 0;
+    printValue(val2);
+    newLine();
 
     while (1)
     {
