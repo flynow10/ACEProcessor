@@ -38,12 +38,12 @@ char *intToString(int i)
 
 void printValue(int val)
 {
-    while (1)
-    {
-        if (isKeyPressed(1))
-        {
-            printString(intToString(val), 0xffffff);
-            return;
-        }
-    }
+    printString(intToString(val), 0xffffff);
+    // while (1)
+    // {
+    //     if (isKeyPressed(1))
+    //     {
+    //         return;
+    //     }
+    // }
 }
