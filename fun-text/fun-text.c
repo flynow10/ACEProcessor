@@ -17,6 +17,10 @@ int main()
                 color = color % 0xffffff;
             }
         }
+        for (int i = 0; i < 2500000; i++)
+        {
+            // wait for a time
+        }
         reset();
     }
     return 0;
