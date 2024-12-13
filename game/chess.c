@@ -114,6 +114,7 @@ int main()
           {
             printString("Stalemate!", 0xffffff);
           }
+          break;
         }
         selectedSquare = 0;
         while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove)
