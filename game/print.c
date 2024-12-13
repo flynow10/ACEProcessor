@@ -40,6 +40,18 @@ void printString(char string[], int color)
   }
 }
 
+void printInt(int i, int color)
+{
+  if (i < 0)
+  {
+    printChar('-');
+    i = -i;
+  }
+  if (i / 10)
+    printInt(i / 10, color);
+  printColorChar(i % 10 + '0', color);
+}
+
 void newLine()
 {
   // printf("\n");

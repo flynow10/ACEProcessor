@@ -403,7 +403,7 @@ void generateKingMoves(Board *board, MoveSet *moveSet, int square)
 
     if (endRow > 7 || endRow < 0 || endCol > 7 || endCol < 0)
     {
-      break;
+      continue;
     }
 
     Piece targetPiece = board->squares[endSquare];
@@ -417,7 +417,7 @@ void generateKingMoves(Board *board, MoveSet *moveSet, int square)
       {
         writeMove(board, moveSet, createMove(square, endSquare));
       }
-      break;
+      continue;
     }
   }
 }
