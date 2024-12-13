@@ -94,7 +94,7 @@ module RISC_V(
 	wire rst;
 
 	always @(*) begin
-		clk = (KEY[0] & S != GET_REG & S != WAIT_REG & S != DISP_REG & S != DISP_BYTE & S != WAIT_BYTE & S != INCREMENT_DISPLAY & S != INCREMENT_BYTE) ? ~KEY[1] : CLOCK_50;
+		clk = CLOCK_50; //(KEY[0] & S != GET_REG & S != WAIT_REG & S != DISP_REG & S != DISP_BYTE & S != WAIT_BYTE & S != INCREMENT_DISPLAY & S != INCREMENT_BYTE) ? ~KEY[1] : CLOCK_50;
 	end
 	assign rst = KEY[2];
 
@@ -302,13 +302,16 @@ module RISC_V(
 					if(jump == 1'b1)
 						register_write_back <= program_counter + 32'd4;
 					else if(mem_to_reg == 1'b1)
-						case (reg_load_size)
-							3'b000: register_write_back <= {{24{memory_byte_output[7]}}, memory_byte_output};
-							3'b001: register_write_back <= {{16{memory_half_word_output[15]}}, memory_half_word_output};
-							3'b100: register_write_back <= {{24{1'b0}}, memory_byte_output};
-							3'b101: register_write_back <= {{16{1'b0}}, memory_half_word_output};
-							default: register_write_back <= memory_word_output;
-						endcase
+						if(alu_output[29]) begin
+							register_write_back <= {{31{1'b0}}, KEY[alu[1:0]]};
+						end else
+							case (reg_load_size)
+								3'b000: register_write_back <= {{24{memory_byte_output[7]}}, memory_byte_output};
+								3'b001: register_write_back <= {{16{memory_half_word_output[15]}}, memory_half_word_output};
+								3'b100: register_write_back <= {{24{1'b0}}, memory_byte_output};
+								3'b101: register_write_back <= {{16{1'b0}}, memory_half_word_output};
+								default: register_write_back <= memory_word_output;
+							endcase
 					else
 						register_write_back <= alu_output;
 					enable_register <= 1'b1;
