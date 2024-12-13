@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include "print.h"
+#include "utils.h"
 
 Board currentBoard;
 
@@ -105,7 +106,7 @@ void undoMove(Board *board, Move move)
   board->isWhiteToMove = !board->isWhiteToMove;
 }
 
-void printBoard(Board *board)
+void printBoard(Board *board, int selectedSquare)
 {
   reset();
   for (int i = 7; i >= 0; i--)
@@ -113,30 +114,36 @@ void printBoard(Board *board)
     for (int j = 7; j >= 0; j--)
     {
       printChar('+');
-      printColorChar('-', 0x33cc22);
+      printChar('-');
     }
     printChar('+');
     newLine();
 
     for (int j = 0; j < 8; j++)
     {
-      printColorChar('|', 0x33cc22);
-      printPiece(board->squares[(i * 8) + j]);
+      int square = rowColToSquare(i, j);
+      int color = 0xffffff;
+      if (square == selectedSquare)
+      {
+        color = 0x33ee55;
+      }
+      printChar('|');
+      printPiece(board->squares[square], color);
     }
-    printColorChar('|', 0x33cc22);
+    printChar('|');
     newLine();
   }
 
   for (int j = 7; j >= 0; j--)
   {
     printChar('+');
-    printColorChar('-', 0x33cc22);
+    printChar('-');
   }
   printChar('+');
   newLine();
 }
 
-void printPiece(Piece piece)
+void printPiece(Piece piece, int color)
 {
   char letter;
   switch (piece)
@@ -181,5 +188,5 @@ void printPiece(Piece piece)
     letter = ' ';
     break;
   }
-  printChar(letter);
+  printColorChar(letter, color);
 }

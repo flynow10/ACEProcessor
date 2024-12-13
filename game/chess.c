@@ -5,31 +5,34 @@
 #include "utils.h"
 #include "print.h"
 #include "input.h"
+#include <stdbool.h>
 
 int perft(Board *board, int depth);
 
 int main()
 {
-  // Board *board = createBoard();
-  // MoveSet moveSet;
-  // for (int i = 0; i < 20; i++)
-  // {
-  //   generateMoves(board, &moveSet);
-
-  //   makeMove(board, moveSet.moves[2]);
-  // }
-  // printBoard(board);
+  Board *board = createBoard();
+  MoveSet moveSet;
+  generateMoves(board, &moveSet);
+  int selectedSquare = 0;
+  printBoard(board, selectedSquare);
+  bool pressed = false;
 
   while (1)
   {
-    reset();
-    if (isKeyPressed(0))
+    if (pressed && !isKeyPressed(0))
     {
-      printString("Pressed!    ", 0xffffff);
+      pressed = false;
     }
-    else
+
+    if (!pressed && isKeyPressed(0))
     {
-      printString("Not pressed!", 0xffffff);
+      pressed = true;
+      do
+      {
+        selectedSquare = (selectedSquare + 1) % 64;
+      } while (board->squares[selectedSquare] == None);
+      printBoard(board, selectedSquare);
     }
   }
   return 0;

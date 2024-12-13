@@ -19,6 +19,6 @@ void initializeBoard(Board *board);
 bool makeMove(Board *board, Move move);
 void undoMove(Board *board, Move move);
 
-void printBoard(Board *board);
-void printPiece(Piece piece);
+void printBoard(Board *board, int selectedSquare);
+void printPiece(Piece piece, int color);
 #endif
