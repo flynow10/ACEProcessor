@@ -27,9 +27,6 @@ int main()
 
   updateMoveSquares(selectedSquare, &moveSet);
   printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
-  int perft3 = perft(board, 3);
-  printString("Perft 3: ", 0xffffff);
-  printInt(perft3, 0xffffff);
 
   while (1)
   {
