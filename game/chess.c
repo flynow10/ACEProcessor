@@ -25,7 +25,7 @@ int main()
     reset();
     if (isKeyPressed(0))
     {
-      printString("Pressed!", 0xffffff);
+      printString("Pressed!    ", 0xffffff);
     }
     else
     {

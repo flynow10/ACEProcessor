@@ -10,5 +10,5 @@ bool isKeyPressed(int key)
           : "=r"(output)
           : "r"(key)
           :);
-  return output != 0;
+  return output == 0;
 }
