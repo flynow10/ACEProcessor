@@ -10,7 +10,6 @@
 #define PIECE_SELECTION 0
 #define MOVE_SELECTION 1
 
-void createMoveSquareList(int selectedSquare, MoveSet *moveSet, int moveSquares[], int *numMoves);
 int perft(Board *board, int depth);
 
 int main()
@@ -23,7 +22,14 @@ int main()
   int phase = PIECE_SELECTION;
   int moveSquares[64];
   int numMoveSquares = 0;
-  createMoveSquareList(selectedSquare, &moveSet, moveSquares, &numMoveSquares);
+  for (int i = 0; i < moveSet.moveCount; i++)
+  {
+    Move move = moveSet.moves[i];
+    if (move.startSquare == selectedSquare)
+    {
+      moveSquares[numMoveSquares++] = move.endSquare;
+    }
+  }
   printBoard(board, selectedSquare, moveSquares, numMoveSquares);
   bool pressed[4] = {false, false, false, false};
 
@@ -51,7 +57,14 @@ int main()
         {
           selectedSquare = (selectedSquare + 1) % 64;
         } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x1) == White);
-        createMoveSquareList(selectedSquare, &moveSet, moveSquares, &numMoveSquares);
+        for (int i = 0; i < moveSet.moveCount; i++)
+        {
+          Move move = moveSet.moves[i];
+          if (move.startSquare == selectedSquare)
+          {
+            moveSquares[numMoveSquares++] = move.endSquare;
+          }
+        }
         printBoard(board, selectedSquare, moveSquares, numMoveSquares);
       }
 
@@ -65,7 +78,14 @@ int main()
             selectedSquare = 63;
           }
         } while (board->squares[selectedSquare] == None || (board->squares[selectedSquare] & 0x1) == White);
-        createMoveSquareList(selectedSquare, &moveSet, moveSquares, &numMoveSquares);
+        for (int i = 0; i < moveSet.moveCount; i++)
+        {
+          Move move = moveSet.moves[i];
+          if (move.startSquare == selectedSquare)
+          {
+            moveSquares[numMoveSquares++] = move.endSquare;
+          }
+        }
         printBoard(board, selectedSquare, moveSquares, numMoveSquares);
       }
 
