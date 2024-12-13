@@ -12,7 +12,7 @@ void printInt(int i)
     reducer /= 10;
     digits + 1;
   }
-  for (int idx = digits; idx >= 0; idx++)
+  for (int idx = digits; idx >= 0; idx--)
   {
     int divisor = 1;
     for (int j = 0; j < idx; j++)
