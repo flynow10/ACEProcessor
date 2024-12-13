@@ -61,6 +61,12 @@ int main()
       if (pressedFrame[2])
       {
         phase = MOVE_SELECTION;
+        selectedMove = 0;
+        while (moveSet.moves[selectedMove].startSquare != selectedSquare)
+        {
+          selectedMove = (selectedMove + 1) % moveSet.moveCount;
+        }
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
       }
     }
     else if (phase == MOVE_SELECTION)
@@ -85,6 +91,26 @@ int main()
           }
         } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+      }
+
+      if (pressedFrame[2])
+      {
+        makeMove(board, moveSet.moves[selectedMove]);
+        selectedSquare = 0;
+        while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove)
+        {
+          selectedSquare = (selectedSquare + 1) % 64;
+        }
+        selectedMove = -1;
+        updateMoveSquares(selectedSquare, &moveSet);
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+        phase = PIECE_SELECTION;
+      }
+      if (pressedFrame[3])
+      {
+        selectedMove = -1;
+        printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+        phase = PIECE_SELECTION;
       }
     }
   }
