@@ -131,7 +131,7 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
 
       for (int k = 0; k < numMoveSquares; k++)
       {
-        if (moveSquares[i] == square)
+        if (moveSquares[k] == square)
         {
           isMove = true;
           break;
