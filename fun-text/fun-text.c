@@ -4,9 +4,9 @@
 
 int main()
 {
-    int red = 0;
-    int green = 0;
-    int blue = 0;
+    int red = 0x26;
+    int green = 0x7c;
+    int blue = 0xf1;
     char *string = "Hello Dr. Jamieson!";
     while (1)
     {
