@@ -31,14 +31,14 @@ int main()
 
 char *intToString(int i)
 {
-    char str[16];
-    char reversedStr[16];
+    char *str = "000000000000000";
     int idx = 0;
     while (i > 0)
     {
         str[idx++] = (char)((i % 10) + 48);
         i /= 10;
     }
+    char reversedStr[idx];
     for (int k = 0; k < idx; k++)
     {
         reversedStr[k] = str[idx - k];
@@ -48,12 +48,12 @@ char *intToString(int i)
 
 void printValue(int val)
 {
-    printString(intToString(val), 0xffffff);
-    // while (1)
-    // {
-    //     if (isKeyPressed(1))
-    //     {
-    //         return;
-    //     }
-    // }
+    while (1)
+    {
+        if (isKeyPressed(1))
+        {
+            printString(intToString(val), 0xffffff);
+            return;
+        }
+    }
 }
