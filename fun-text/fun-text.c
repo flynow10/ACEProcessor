@@ -8,9 +8,10 @@ int main()
     {
         printString(string, color);
         reset();
-        for (int i = 0; i < 0xffffff; i++)
+        color++;
+        if (color > 0xffffff)
         {
-            color++;
+            color = 0;
         }
     }
     return 0;
