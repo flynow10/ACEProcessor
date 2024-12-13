@@ -11,10 +11,10 @@ int main()
         for (int i = 0; i < strlen(string); i++)
         {
             printColorChar(string[i], color);
-            color++;
+            color += 0x421;
             if (color > 0xffffff)
             {
-                color = 0;
+                color = color % 0xffffff;
             }
         }
         reset();
