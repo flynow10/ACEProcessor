@@ -8,6 +8,8 @@ int main()
     char *string = "Hello Dr. Jamieson!";
     while (1)
     {
+        printString("Simple VGA color test:", 0xffffff);
+        newLine();
         for (int i = 0; i < strlen(string); i++)
         {
             printColorChar(string[i], color);
