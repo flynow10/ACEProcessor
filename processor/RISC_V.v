@@ -94,9 +94,9 @@ module RISC_V(
 	wire rst;
 
 	always @(*) begin
-		clk = (KEY[0] & S != GET_REG & S != WAIT_REG & S != DISP_REG & S != DISP_BYTE & S != WAIT_BYTE & S != INCREMENT_DISPLAY & S != INCREMENT_BYTE) ? ~KEY[1] : CLOCK_50;
+		clk = CLOCK_50; //(KEY[0] & S != GET_REG & S != WAIT_REG & S != DISP_REG & S != DISP_BYTE & S != WAIT_BYTE & S != INCREMENT_DISPLAY & S != INCREMENT_BYTE) ? ~KEY[1] : CLOCK_50;
 	end
-	assign rst = KEY[2];
+	assign rst = SW[9];
 
 	// FSM Control
 	parameter START = 5'b0,
@@ -186,17 +186,17 @@ module RISC_V(
 	always @(posedge clk or negedge rst) begin
 		if(rst == 1'b0)
 			S <= START;
-		else if(program_counter != 32'h1020 || KEY[0])
+		else //if(program_counter != 32'h1020 || KEY[0])
 			S <= NS;
 	end
 
 	always @(*) begin
 		case (S)
-			START: if(KEY[3] == 1'b0)
+			START: /*if(KEY[3] == 1'b0)
 				NS = FETCH;
-			else
+			else*/
 				NS = START;
-			FETCH: NS = GET_REG;
+			FETCH: NS = WAIT_FETCH;
 			GET_REG: NS = WAIT_REG;
 			WAIT_REG: NS = DISP_REG;
 			DISP_REG: NS = (disp_count == 6'd32)?(PRINT_DONE):(DISP_BYTE);
@@ -302,13 +302,16 @@ module RISC_V(
 					if(jump == 1'b1)
 						register_write_back <= program_counter + 32'd4;
 					else if(mem_to_reg == 1'b1)
-						case (reg_load_size)
-							3'b000: register_write_back <= {{24{memory_byte_output[7]}}, memory_byte_output};
-							3'b001: register_write_back <= {{16{memory_half_word_output[15]}}, memory_half_word_output};
-							3'b100: register_write_back <= {{24{1'b0}}, memory_byte_output};
-							3'b101: register_write_back <= {{16{1'b0}}, memory_half_word_output};
-							default: register_write_back <= memory_word_output;
-						endcase
+						if(alu_output[29] == 1'b1) begin
+							register_write_back <= {{31{1'b0}}, KEY[alu_output[1:0]]};
+						end else
+							case (reg_load_size)
+								3'b000: register_write_back <= {{24{memory_byte_output[7]}}, memory_byte_output};
+								3'b001: register_write_back <= {{16{memory_half_word_output[15]}}, memory_half_word_output};
+								3'b100: register_write_back <= {{24{1'b0}}, memory_byte_output};
+								3'b101: register_write_back <= {{16{1'b0}}, memory_half_word_output};
+								default: register_write_back <= memory_word_output;
+							endcase
 					else
 						register_write_back <= alu_output;
 					enable_register <= 1'b1;

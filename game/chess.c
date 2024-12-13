@@ -4,20 +4,34 @@
 #include "board.h"
 #include "utils.h"
 #include "print.h"
+#include "input.h"
 
 int perft(Board *board, int depth);
 
 int main()
 {
-  Board *board = createBoard();
-  MoveSet moveSet;
-  for (int i = 0; i < 20; i++)
-  {
-    generateMoves(board, &moveSet);
+  // Board *board = createBoard();
+  // MoveSet moveSet;
+  // for (int i = 0; i < 20; i++)
+  // {
+  //   generateMoves(board, &moveSet);
 
-    makeMove(board, moveSet.moves[2]);
+  //   makeMove(board, moveSet.moves[2]);
+  // }
+  // printBoard(board);
+
+  while (1)
+  {
+    reset();
+    if (isKeyPressed(0))
+    {
+      printString("Pressed!    ", 0xffffff);
+    }
+    else
+    {
+      printString("Not pressed!", 0xffffff);
+    }
   }
-  printBoard(board);
   return 0;
 }
 
