@@ -4,23 +4,32 @@
 #include "board.h"
 #include "utils.h"
 #include "print.h"
+#include "input.h"
 
 int perft(Board *board, int depth);
 
 int main()
 {
-  int color = 0xff0000;
+  // Board *board = createBoard();
+  // MoveSet moveSet;
+  // for (int i = 0; i < 20; i++)
+  // {
+  //   generateMoves(board, &moveSet);
+
+  //   makeMove(board, moveSet.moves[2]);
+  // }
+  // printBoard(board);
+
   while (1)
   {
     reset();
-    for (int i = 33; i < 127; i++)
+    if (isKeyPressed(0))
     {
-      printColorChar((char)(i), color);
-      // color++;
-      // if (color >= 0xffffff)
-      // {
-      //   color = 0;
-      // }
+      printString("Pressed!", 0xffffff);
+    }
+    else
+    {
+      printString("Not pressed!", 0xffffff);
     }
   }
   return 0;

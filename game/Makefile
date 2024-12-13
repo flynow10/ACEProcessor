@@ -1,5 +1,5 @@
 CC = riscv64-unknown-elf-gcc
-LDFLAGS = -march=rv32i -g -ggdb -mabi=ilp32 -Wl,-Map,progmem.map -ffreestanding -nostartfiles -Wl,--no-relax -Wl,--start-group,--end-group -mstrict-align
+LDFLAGS = -march=rv32i -g -ggdb -mabi=ilp32 -Wl,-Map,progmem.map -ffreestanding -Wl,--no-relax -Wl,--start-group,--end-group -mstrict-align
 CFLAGS = -march=rv32i -g -ggdb -mno-div -mabi=ilp32 -ffunction-sections -fdata-sections -Wall -Wextra -pedantic -DCPU_FREQ=50000000 -Os -mstrict-align
 objects = chess.o board.o gamestate.o move.o movegen.o utils.o print.o
 chess-binary.txt: chess_rv.mif
