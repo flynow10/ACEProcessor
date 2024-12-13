@@ -5,23 +5,14 @@
 
 void printInt(int i)
 {
-  int reducer = i;
-  int digits = 0;
-  while (reducer > 0)
+  if (i < 0)
   {
-    reducer /= 10;
-    digits + 1;
+    printChar('-');
+    i = -i;
   }
-  for (int idx = digits; idx >= 0; idx--)
-  {
-    int divisor = 1;
-    for (int j = 0; j < idx; j++)
-    {
-      divisor = divisor * 10;
-    }
-
-    printChar(((i / divisor) % 10) + 48);
-  }
+  if (i / 10)
+    printInt(i / 10);
+  printChar(i % 10 + '0');
 }
 
 void printValue(int val)
