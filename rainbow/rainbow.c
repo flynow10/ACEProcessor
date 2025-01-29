@@ -11,13 +11,11 @@ static int HEIGHT = 60;
 int main()
 {
   int nums[] = {0, 1, 2, 3, 4};
-  int *memNums;
-
-  memNums = (int *)malloc(5 * sizeof(int));
+  int *memNums = malloc(5 * sizeof(int));
 
   memcpy(memNums, nums, 5);
 
-  for (size_t i = 0; i < sizeof(memNums) / sizeof(memNums[0]); i++)
+  for (size_t i = 0; i < 5; i++)
   {
     printInt(memNums[i], 0xffffff);
   }
