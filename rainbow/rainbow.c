@@ -1,7 +1,8 @@
 #define DEFINE_MALLOC
 #include "print.h"
-#include "tiny-malloc.c"
+// #include "tiny-malloc.c"
 #include <string.h>
+#include <stdlib.h>
 
 int getColor(int x, int y, int round);
 
