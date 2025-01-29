@@ -3,13 +3,13 @@
 int getColor(int x, int y);
 
 static int WIDTH = 80;
-static int HEIGHT = 50;
+static int HEIGHT = 60;
 
 int main()
 {
-  for (int row = 0; row < WIDTH; row++)
+  for (int row = 0; row < HEIGHT; row++)
   {
-    for (int col = 0; col < HEIGHT; col++)
+    for (int col = 0; col < WIDTH; col++)
     {
       printCharPos(0x1, row * WIDTH + col, getColor(col, row));
     }
