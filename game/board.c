@@ -96,6 +96,11 @@ void undoMove(Board *board, Move move)
 {
   Piece movedPiece = board->squares[move.endSquare];
 
+  if (move.promotion != Empty)
+  {
+    movedPiece = Pawn | (movedPiece & Black);
+  }
+
   board->squares[move.startSquare] = movedPiece;
 
   GameState *currentState = popState();
