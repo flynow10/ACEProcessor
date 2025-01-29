@@ -24,6 +24,14 @@ SECTIONS
         PROVIDE (__global_pointer$ = .);
     } > ram
 
+    .heap ALIGN(8) :
+    {
+        __heap_start = .;
+        __malloc_start = .;
+        *(.heap*)
+        *(.sheap*)
+    } > ram
+
     .bss ALIGN(8) (NOLOAD) :
     {
         __bss_start = .;
