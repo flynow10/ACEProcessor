@@ -27,6 +27,7 @@ int main()
 
   updateMoveSquares(selectedSquare, &moveSet);
   printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+  printMoveSet(&moveSet);
 
   while (1)
   {
@@ -42,6 +43,7 @@ int main()
         } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
         updateMoveSquares(selectedSquare, &moveSet);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+        printMoveSet(&moveSet);
       }
 
       if (pressedFrame[1])
@@ -56,6 +58,7 @@ int main()
         } while (board->squares[selectedSquare] == None || ((board->squares[selectedSquare] & 0x10) == White) != board->isWhiteToMove);
         updateMoveSquares(selectedSquare, &moveSet);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, -1);
+        printMoveSet(&moveSet);
       }
 
       if (pressedFrame[2])
@@ -72,6 +75,7 @@ int main()
           }
         }
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+        printMoveSet(&moveSet);
       }
     }
     else if (phase == MOVE_SELECTION)
@@ -88,6 +92,7 @@ int main()
           }
         } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+        printMoveSet(&moveSet);
       }
 
       if (pressedFrame[1])
@@ -106,6 +111,7 @@ int main()
           }
         } while (moveSet.moves[selectedMove].startSquare != selectedSquare);
         printBoard(board, selectedSquare, moveSquares, numMoveSquares, moveSet.moves[selectedMove].endSquare);
+        printMoveSet(&moveSet);
       }
 
       if (pressedFrame[2])
@@ -131,6 +137,7 @@ int main()
           }
           updateMoveSquares(selectedSquare, &moveSet);
           printBoard(board, -1, moveSquares, numMoveSquares, -1);
+          printMoveSet(&moveSet);
           break;
         }
         selectedSquare = 0;

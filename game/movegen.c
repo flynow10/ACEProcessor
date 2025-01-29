@@ -435,6 +435,10 @@ void printMove(Move move)
 {
   printSquare(move.startSquare);
   printSquare(move.endSquare);
+  if (move.promotion != Empty)
+  {
+    printPiece(move.promotion | White, 0xffffff);
+  }
 }
 
 void printSquare(int square)

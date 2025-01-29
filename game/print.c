@@ -33,7 +33,7 @@ void printColorChar(char c, int color)
 
 void printString(char string[], int color)
 {
-  for (int i = 0; i < strlen(string); i++)
+  for (size_t i = 0; i < strlen(string); i++)
   {
     char c = string[i];
     printColorChar(c, color);
