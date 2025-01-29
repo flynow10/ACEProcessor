@@ -2,8 +2,8 @@
 
 int getColor(int x, int y);
 
-static int WIDTH = 90;
-static int HEIGHT = 60;
+static int WIDTH = 80;
+static int HEIGHT = 50;
 
 int main()
 {
