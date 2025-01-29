@@ -1,4 +1,7 @@
+#define DEFINE_MALLOC
 #include "print.h"
+#include "tiny-malloc.c"
+#include <string.h>
 
 int getColor(int x, int y, int round);
 
@@ -7,18 +10,30 @@ static int HEIGHT = 60;
 
 int main()
 {
-  int round = 0;
-  while (1)
+  int nums[] = {0, 1, 2, 3, 4};
+  int *memNums;
+
+  memNums = (int *)malloc(5 * sizeof(int));
+
+  memcpy(memNums, nums, 5);
+
+  for (size_t i = 0; i < sizeof(memNums) / sizeof(memNums[0]); i++)
   {
-    for (int row = 0; row < HEIGHT; row++)
-    {
-      for (int col = 0; col < WIDTH; col++)
-      {
-        printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
-      }
-    }
-    round = (round + 1) % 256;
+    printInt(memNums[i], 0xffffff);
   }
+
+  // int round = 0;
+  // while (1)
+  // {
+  //   for (int row = 0; row < HEIGHT; row++)
+  //   {
+  //     for (int col = 0; col < WIDTH; col++)
+  //     {
+  //       printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
+  //     }
+  //   }
+  //   round = (round + 1) % 256;
+  // }
 }
 
 int getColor(int x, int y, int round)
