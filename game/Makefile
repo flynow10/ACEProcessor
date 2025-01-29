@@ -8,6 +8,7 @@ chess_rv.mif: build $(objects)
 	cd build; $(CC) $(LDFLAGS) -T ../riscv.ld -o chess $(objects)
 	riscv64-unknown-elf-objcopy -O binary build/chess build/chess-binary
 	cd ../Assembler; dotnet run ../game/build/chess-binary > ../game/build/chess_rv.mif
+	cp ./build/chess_rv.mif ../processor/memory/memory.mif
 
 mac: build
 	gcc chess.c board.c gamestate.c move.c movegen.c utils.c print.c -o build/chess-mac
