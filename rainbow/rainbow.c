@@ -11,7 +11,7 @@ int main()
   {
     for (int col = 0; col < HEIGHT; col++)
     {
-      printColorChar((char)0x01, getColor(col, row));
+      printCharPos((char)'A', row * WIDTH + col, getColor(col, row));
     }
   }
   while (1)
