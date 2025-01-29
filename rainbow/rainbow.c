@@ -13,7 +13,7 @@ int main()
   int nums[] = {0, 1, 2, 3, 4};
   int *memNums = malloc(5 * sizeof(int));
 
-  memcpy(memNums, nums, 5);
+  memcpy(memNums, nums, 5 * sizeof(int));
 
   for (size_t i = 0; i < 5; i++)
   {
