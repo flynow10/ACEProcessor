@@ -2,7 +2,8 @@
 
 #include "print.h"
 #include "utils.h"
-#include <stdlib.h>
+#define DEFINE_MALLOC
+#include "tiny-malloc.c"
 
 Board *createBoard()
 {
