@@ -120,8 +120,19 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
     {
       printChar('+');
       printChar('-');
+      printChar('-');
+      printChar('-');
     }
     printChar('+');
+    newLine();
+    for (int j = 7; j >= 0; j--)
+    {
+      printChar('|');
+      printChar(' ');
+      printChar(' ');
+      printChar(' ');
+    }
+    printChar('|');
     newLine();
 
     for (int j = 0; j < 8; j++)
@@ -152,6 +163,7 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
         color = 0x3333ee;
       }
       printChar('|');
+      printChar(' ');
       if (isMove && board->squares[square] == None)
       {
         printColorChar('#', color);
@@ -160,6 +172,16 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
       {
         printPiece(board->squares[square], color);
       }
+      printChar(' ');
+    }
+    printChar('|');
+    newLine();
+    for (int j = 7; j >= 0; j--)
+    {
+      printChar('|');
+      printChar(' ');
+      printChar(' ');
+      printChar(' ');
     }
     printChar('|');
     newLine();
