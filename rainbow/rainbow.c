@@ -31,7 +31,9 @@ int main()
         printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
       }
     }
-    round = ((round + 1) % 512) - 256;
+    round++;
+    if (round >= 256)
+      round = -256;
   }
 }
 
