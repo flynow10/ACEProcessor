@@ -115,6 +115,7 @@ void undoMove(Board *board, Move move)
 void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare, int phase)
 {
   reset();
+  printString("CHESS!", 0x3399ff);
   printString("Key 1 - Deselect Piece", 0xffffff);
   newLine();
   if (phase == 0)
