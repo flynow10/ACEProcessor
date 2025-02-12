@@ -123,7 +123,7 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
   }
   else
   {
-    printString("Key 2 - Make Move", 0xffffff);
+    printString("Key 2 - Make Move   ", 0xffffff);
   }
   newLine();
   if (phase == 0)
@@ -132,7 +132,7 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
   }
   else
   {
-    printString("Key 3 - Previous Move", 0xffffff);
+    printString("Key 3 - Previous Move ", 0xffffff);
   }
   newLine();
   if (phase == 0)
@@ -141,7 +141,7 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
   }
   else
   {
-    printString("Key 4 - Next Move", 0xffffff);
+    printString("Key 4 - Next Move ", 0xffffff);
   }
   newLine();
   printString("Switch 10 - Reset", 0xffffff);
