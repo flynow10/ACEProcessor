@@ -30,12 +30,12 @@ int main()
       {
         printInt(round, 0xffffff);
         reset();
-        printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
+        printCharPos(0x1, row * WIDTH + col, getColor(col, row, round >= 0 ? round : -round));
       }
     }
     round++;
     if (round >= 256)
-      round = -256;
+      round = -255;
   }
 }
 
@@ -43,6 +43,6 @@ int getColor(int x, int y, int round)
 {
   int ir = (int)((x * 256) / WIDTH);
   int ig = (int)((y * 256) / HEIGHT);
-  int ib = round >= 0 ? round : -round;
+  int ib = round;
   return (ir << 16) | (ig << 8) | (ib & 0xff);
 }
