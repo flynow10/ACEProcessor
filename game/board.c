@@ -111,16 +111,37 @@ void undoMove(Board *board, Move move)
   board->isWhiteToMove = !board->isWhiteToMove;
 }
 
-void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare)
+void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare, int phase)
 {
   reset();
-  printString("Key 1 - Cancel Move", 0xffffff);
+  printString("Key 1 - Deselect Piece", 0xffffff);
   newLine();
-  printString("Key 2 - Make Move", 0xffffff);
+  if (phase == 0)
+  {
+    printString("Key 2 - Select Piece", 0xffffff);
+  }
+  else
+  {
+    printString("Key 2 - Make Move", 0xffffff);
+  }
   newLine();
-  printString("Key 3 - Previous Piece / Previous Move", 0xffffff);
+  if (phase == 0)
+  {
+    printString("Key 3 - Previous Piece", 0xffffff);
+  }
+  else
+  {
+    printString("Key 3 - Previous Move", 0xffffff);
+  }
   newLine();
-  printString("Key 4 - Next Piece / Next Move", 0xffffff);
+  if (phase == 0)
+  {
+    printString("Key 4 - Next Piece", 0xffffff);
+  }
+  else
+  {
+    printString("Key 4 - Next Move", 0xffffff);
+  }
   newLine();
   printString("Switch 10 - Reset", 0xffffff);
   newLine();

@@ -19,6 +19,6 @@ void initializeBoard(Board *board);
 bool makeMove(Board *board, Move move);
 void undoMove(Board *board, Move move);
 
-void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare);
+void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare, int phase);
 void printPiece(Piece piece, int color);
 #endif
