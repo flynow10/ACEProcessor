@@ -31,18 +31,18 @@ int main()
         printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
       }
     }
-    round = (round + 30) % 256;
+    round = (round + 1) % 256;
   }
 }
 
 int getColor(int x, int y, int round)
 {
-  float r = (float)x / WIDTH;
-  float g = (float)y / HEIGHT;
+  // float r = (float)x / WIDTH;
+  // float g = (float)y / HEIGHT;
   // float b = (float)round / 256;
 
-  int ir = (int)(r * 256);
-  int ig = (int)(g * 256);
+  int ir = (int)((x * 256) / WIDTH);
+  int ig = (int)((y * 256) / HEIGHT);
   int ib = (int)(round);
   return (ir << 16) | (ig << 8) | ib;
 }
