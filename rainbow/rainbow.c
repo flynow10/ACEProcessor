@@ -28,6 +28,8 @@ int main()
     {
       for (int col = 0; col < WIDTH; col++)
       {
+        printInt(round, 0xffffff);
+        reset();
         printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
       }
     }
