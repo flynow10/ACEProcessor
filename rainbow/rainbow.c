@@ -39,14 +39,8 @@ int main()
 
 int getColor(int x, int y, int round)
 {
-  if (round < 0)
-    round = -round;
-  // float r = (float)x / WIDTH;
-  // float g = (float)y / HEIGHT;
-  // float b = (float)round / 256;
-
   int ir = (int)((x * 256) / WIDTH);
   int ig = (int)((y * 256) / HEIGHT);
-  int ib = (int)(round);
-  return (ir << 16) | (ig << 8) | ib;
+  int ib = round >= 0 ? round : -round;
+  return (ir << 16) | (ig << 8) | (ib & 0xff);
 }
