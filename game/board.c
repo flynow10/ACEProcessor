@@ -2,12 +2,13 @@
 
 #include "print.h"
 #include "utils.h"
-#define DEFINE_MALLOC
-#include "tiny-malloc.c"
+// #define DEFINE_MALLOC
+// #include "tiny-malloc.c"
 
+Board currentBoard;
 Board *createBoard()
 {
-  Board *board = (Board *)malloc(sizeof(Board));
+  Board *board = &currentBoard; //(Board *)malloc(sizeof(Board));
   initializeBoard(board);
   return board;
 }
