@@ -114,6 +114,11 @@ void undoMove(Board *board, Move move)
 void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMoveSquares, int selectedMoveSquare)
 {
   reset();
+  printString("Key 1 - Cancel Move", 0xffffff);
+  printString("Key 2 - Make Move", 0xffffff);
+  printString("Key 3 - Previous Piece / Previous Move", 0xffffff);
+  printString("Key 4 - Next Piece / Next Move", 0xffffff);
+  printString("Switch 10 - Reset", 0xffffff);
   for (int i = 7; i >= 0; i--)
   {
     for (int j = 7; j >= 0; j--)

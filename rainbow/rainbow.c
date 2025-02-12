@@ -30,9 +30,9 @@ int main()
       {
         printInt(round, 0xffffff);
         newLine();
-        printInt(round >= 0 ? round : -round, 0xffffff);
+        printInt(round >= 0 ? round : ~round + 1, 0xffffff);
         reset();
-        printCharPos(0x1, row * WIDTH + col, getColor(col, row, round >= 0 ? round : -round));
+        printCharPos(0x1, row * WIDTH + col, getColor(col, row, round < 0 ? -round : round));
       }
     }
     round++;
