@@ -191,6 +191,8 @@ void printBoard(Board *board, int selectedSquare, int moveSquares[], int numMove
   {
     printChar('+');
     printChar('-');
+    printChar('-');
+    printChar('-');
   }
   printChar('+');
   newLine();
