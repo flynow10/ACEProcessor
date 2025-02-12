@@ -31,12 +31,14 @@ int main()
         printCharPos(0x1, row * WIDTH + col, getColor(col, row, round));
       }
     }
-    round = (round + 1) % 256;
+    round = ((round + 1) % 512) - 256;
   }
 }
 
 int getColor(int x, int y, int round)
 {
+  if (round < 0)
+    round = -round;
   // float r = (float)x / WIDTH;
   // float g = (float)y / HEIGHT;
   // float b = (float)round / 256;
