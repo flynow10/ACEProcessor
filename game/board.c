@@ -2,12 +2,11 @@
 
 #include "print.h"
 #include "utils.h"
-
-Board currentBoard;
+#include <stdlib.h>
 
 Board *createBoard()
 {
-  Board *board = &currentBoard;
+  Board *board = (Board *)malloc(sizeof(Board));
   initializeBoard(board);
   return board;
 }
