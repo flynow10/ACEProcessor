@@ -101,8 +101,9 @@ int print_card_number(int number)
 void print_card(Card *card)
 {
   int lineStart = getCurrentPos() % 80;
+  int line = 0;
   printString("+=======+", 0xffffff);
-  setCurrentPos(lineStart + 80);
+  setCurrentPos(lineStart + 80 * line++);
   printChar('|');
   int numChars = print_card_number(card->number);
   if (numChars == 1)
@@ -113,9 +114,11 @@ void print_card(Card *card)
   {
     printString("     |", 0xffffff);
   }
-  setCurrentPos(lineStart + 80 * 2);
+  setCurrentPos(lineStart + 80 * line++);
   printString("|       |", 0xffffff);
-  setCurrentPos(lineStart + 80 * 3);
+  setCurrentPos(lineStart + 80 * line++);
+  printString("|       |", 0xffffff);
+  setCurrentPos(lineStart + 80 * line++);
   printString("|   ", 0xffffff);
   switch (card->suit)
   {
@@ -132,9 +135,12 @@ void print_card(Card *card)
     printChar('S');
     break;
   }
-  setCurrentPos(lineStart + 80 * 4);
+  printString("   |", 0xffffff);
+  setCurrentPos(lineStart + 80 * line++);
   printString("|       |", 0xffffff);
-  setCurrentPos(lineStart + 80 * 5);
+  setCurrentPos(lineStart + 80 * line++);
+  printString("|       |", 0xffffff);
+  setCurrentPos(lineStart + 80 * line++);
   if (numChars == 1)
   {
     printString("|      ", 0xffffff);
@@ -144,7 +150,8 @@ void print_card(Card *card)
     printString("|     ", 0xffffff);
   }
   print_card_number(card->number);
-  setCurrentPos(lineStart + 80 * 6);
+  printChar('|');
+  setCurrentPos(lineStart + 80 * line++);
   printString("+=======+", 0xffffff);
   setCurrentPos((lineStart / 80) + (getCurrentPos() % 80));
 }
