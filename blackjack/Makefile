@@ -1,7 +1,7 @@
 CC = riscv64-unknown-elf-gcc
 LDFLAGS = -march=rv32i -g -ggdb -mabi=ilp32 -Wl,-Map,progmem.map -ffreestanding -Wl,--no-relax -Wl,--start-group,--end-group -mstrict-align
 CFLAGS = -march=rv32i -g -ggdb -mno-div -mabi=ilp32 -ffunction-sections -fdata-sections -Wall -Wextra -pedantic -DCPU_FREQ=50000000 -Os -mstrict-align
-objects = blackjack.o print.o input.o
+objects = blackjack.o print.o input.o card.o random.o
 blackjack-binary.txt: blackjack.mif
 	cd build; riscv64-unknown-elf-objdump -D blackjack > blackjack-binary.txt
 blackjack.mif: build $(objects)
