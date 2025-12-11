@@ -10,6 +10,9 @@ int main()
   printString("Blackjack!", 0xffffff);
   newLine();
 
-  Card card = {.number = 11, .suit = 2};
-  print_card(&card);
+  Card card1 = {.number = 11, .suit = 2};
+  Card card2 = {.number = 2, .suit = 0};
+  print_card(&card1);
+  printChar(' ');
+  print_card(&card2);
 }

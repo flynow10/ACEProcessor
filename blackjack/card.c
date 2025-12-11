@@ -102,7 +102,7 @@ void print_card(Card *card)
 {
   int lineStart = getCurrentPos() / 80;
   int linePosStart = getCurrentPos() % 80;
-  int line = 0;
+  int line = 1;
   printString("+=====+", 0xffffff);
   setCurrentPos(lineStart * 80 + linePosStart + 80 * line++);
   printChar('|');
