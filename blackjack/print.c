@@ -59,6 +59,15 @@ void newLine()
   currentPos += 80;
 }
 
+void setCurrentPos(int pos)
+{
+  currentPos = pos;
+}
+int getCurrentPos()
+{
+  return currentPos;
+}
+
 void reset()
 {
   currentPos = 0;

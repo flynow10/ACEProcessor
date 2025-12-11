@@ -8,5 +8,7 @@ void printChar(char c);
 void printInt(int i, int color);
 void reset();
 void newLine();
+void setCurrentPos(int pos);
+int getCurrentPos();
 
 #endif
